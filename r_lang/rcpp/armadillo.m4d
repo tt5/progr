@@ -1,0 +1,795 @@
+---
+{
+"title" : "RcppArmadillo"
+}
+---
+
+²0¹
+```
+mat 	 =  	Mat<double>
+fmat 	 =  	Mat<float>
+cx_mat 	 =  	Mat<cx_double>
+cx_fmat	 =  	Mat<cx_float>
+umat 	 =  	Mat<uword>
+imat 	 =  	Mat<sword>
+```
+
+Functions which use LAPACK or ATLAS (generally matrix decompositions) are only valid
+for the following types: `mat`, `fmat`, `cx_mat`, `cx_fmat`
+
+Elements are stored with column-major ordering.
+
+Constructors:
+
+```
+mat()
+mat(n_rows, n_cols)
+mat(n_rows, n_cols, fill_type)
+mat(size(X))
+mat(size(X), fill_type)
+mat(mat)
+mat(sp_mat)
+mat(vec)
+mat(rowvec)
+mat(initializer_list)
+mat(string)
+mat(std::vector)   (treated as a column vector)
+cx_mat(mat,mat)   (for constructing a complex matrix out of two real matrices) 
+```
+
+`fill::zeros` =	set all elements to 0  
+`fill::ones` = set all elements to 1  
+`fill::eye`	= set the elements along the main diagonal to 1 and off-diagonal
+elements to 0  
+`fill::randu` =	set each element to a random value from a uniform
+distribution in the [0,1] interval  
+`fill::randn` =	set each element to a random value from a normal/Gaussian
+distribution with zero mean and unit variance  
+`fill::none` = do not modify the elements  
+
+The string format for the constructor is elements separated by spaces, and rows
+denoted by semicolons.
+
+attributes
+
+`.n_rows` number of rows; present in Mat, Col, Row, Cube, field and SpMat
+`.n_cols` number of columns; present in Mat, Col, Row, Cube, field and SpMat
+`.n_elem` total number of elements; present in Mat, Col, Row, Cube, field and SpMat
+
+The variables are read-only; to change the size, use
+```
+.set_size()
+.copy_size()
+.zeros()
+.ones()
+.reset()
+```
+
+operators:  `+  -  *  /  %  ==  !=  <=  >=  <  >`
+
+element/object access via `()`, `[]` and `.at()`
+
+using the `<<` operator is slower than using initialiser lists
+
+```
+vec v = { 1, 2, 3 };
+
+mat A = { {1, 3, 5},
+          {2, 4, 6} };
+
+.fill( value )
+.imbue( functor )
+.imbue( lambda_function )
+.transform( functor )
+.transform( lambda_function )
+.set_size( n_elem )
+	  	(member function of Col, Row, field)
+.set_size( n_rows, n_cols )
+	  	(member function of Mat, SpMat, field) 
+.set_size( size(X) )
+	  	(member function of Mat, Col, Row, Cube, SpMat, field) 
+.reshape( n_rows, n_cols )
+	  	(member function of Mat and SpMat)
+.reshape( size(X) )
+	  	(member function of Mat, Cube, SpMat)
+.resize( n_elem )
+	  	(member function of Col, Row)
+.resize( n_rows, n_cols )
+	  	(member function of Mat and SpMat)
+.resize( size(X) )
+	  	(member function of Mat, Col, Row, Cube, SpMat) 
+.copy_size( A )
+.diag()
+.diag( k )
+.each_col()
+.each_row()
+.each_col( vector_of_indices )
+.each_row( vector_of_indices )
+.set_imag( X )
+.set_real( X )
+.insert_rows( row_number, X )
+.insert_rows( row_number, number_of_rows )
+.insert_rows( row_number, number_of_rows, set_to_zero )
+.insert_cols( col_number, X )
+.insert_cols( col_number, number_of_cols )
+.insert_cols( col_number, number_of_cols, set_to_zero )
+.shed_row( row_number )
+```
+`.shed_rows( first_row, last_row )`	member functions of Mat, Col and SpMat
+```
+.shed_col( column_number )
+```
+`.shed_cols( first_column, last_column )` member functions of Mat, Row and SpMat
+```
+.swap_rows( row1, row2 )
+.swap_cols( col1, col2 )
+.swap( X )
+.memptr()
+.colptr( col_number )
+```
+
+iterators (matrices and vectors)
+
+STL-style iterators and associated member functions of Mat, Col, Row and SpMat
+
+Member functions:
+
+`.begin()` iterator referring to the first element
+`.end()` iterator referring to the past-the-end element
+
+`.begin_row( row_number )` iterator referring to the first element of the specified row
+`.end_row( row_number )` iterator referring to the past-the-end element of the specified row
+
+`.begin_col( col_number )` iterator referring to the first element of the specified column
+`.end_col( col_number )` iterator referring to the past-the-end element of the specified column
+
+Iterator types:
+
+```
+mat::iterator
+vec::iterator
+rowvec::iterator
+sp_mat::iterator
+```
+random access iterators, for read/write access to elements (which are stored
+column by column)
+
+
+```
+mat::const_iterator
+vec::const_iterator
+rowvec::const_iterator
+sp_mat::const_iterator
+```
+random access iterators, for read-only access to elements (which are stored
+column by column)
+
+
+```
+mat::col_iterator
+vec::col_iterator
+rowvec::col_iterator
+```
+random access iterators, for read/write access to the elements of a specific column
+
+```
+mat::const_col_iterator
+vec::const_col_iterator
+rowvec::const_col_iterator
+```
+random access iterators, for read-only access to the elements of a specific column
+
+
+```
+mat::row_iterator
+sp_mat::row_iterator
+```
+rudimentary forward iterator, for read/write access to the elements of a specific row
+
+```
+mat::const_row_iterator
+sp_mat::const_row_iterator
+```
+rudimentary forward iterator, for read-only access to the elements of a specific row
+
+```
+vec::row_iterator
+rowvec::row_iterator
+```
+random access iterators, for read/write access to the elements of a specific row
+
+```
+vec::const_row_iterator
+rowvec::const_row_iterator
+```
+
+STL-style container functions
+
+Member functions that mimic the containers in the C++ Standard Template Library:
+
+`.clear()`  
+causes an object to have no elements
+
+`.empty()`  
+returns true if the object has no elements; returns false if the object has one
+or more elements
+
+`.size()`  
+returns the total number of elements 
+
+`.t()`  
+`.st()`  
+`.i()`  
+`.i( method )`  
+`.min()` (member functions of Mat, Col, Row, SpMat, Cube)  
+`.max()`
+
+`.min( index_of_min_val )` (member functions of Mat, Col, Row, SpMat, Cube)
+`.max( index_of_max_val )`
+
+`.min( row_of_min_val, col_of_min_val )` member functions of Mat and SpMat
+`.max( row_of_max_val, col_of_max_val )`
+
+```
+.is_vec()
+.is_colvec()
+.is_rowvec()
+.is_sorted()
+.is_sorted( sort_direction )
+.is_sorted( sort_direction, dim )
+.is_finite()
+.has_inf()
+.has_nan()
+.print()
+.print( header )
+.print( stream )
+.print( stream, header )
+.raw_print()
+.raw_print( header )
+.raw_print( stream )
+.raw_print( stream, header )
+```
+
+saving/loading matrices and cubes
+
+```
+.save( name )
+.quiet_save( name )
+.save( name, file_type )
+.quiet_save( name, file_type )
+
+.save( stream )
+.quiet_save( stream )
+.save( stream, file_type )
+.quiet_save( stream, file_type )
+
+.load( name )
+.quiet_load( name )
+.load( name, file_type )
+.quiet_load( name, file_type )
+
+.load( stream )
+.quiet_load( stream )
+.load( stream, file_type )
+.quiet_load( stream, file_type )
+```
+
+`file_type` can be one of the following:
+
+`auto_detect`  
+Used by load() and `quiet_load()` only: try to automatically detect the file
+types one of the formats described below. This is the default operation.
+
+`raw_ascii`  
+Numerical data stored in raw ASCII format, without a header. The numbers are
+separated by whitespace. The number of columns must be the same in each row.
+Cubes are loaded as one slice. Data which was saved in Matlab/Octave using the
+-ascii option can be read in Armadillo, except for complex numbers. Complex
+numbers are stored in standard C++ notation, which is a tuple surrounded by
+brackets: eg. (1.23,4.56) indicates 1.24 + 4.56i.
+
+`raw_binary`  
+Numerical data stored in machine dependent raw binary format, without a header.
+Matrices are loaded to have one column, while cubes are loaded to have one
+slice with one column. The .reshape() function can be used to alter the size of
+the loaded matrix/cube without losing data.
+
+`arma_ascii`  
+Numerical data stored in human readable text format, with a simple header to
+speed up loading. The header indicates the type of matrix as well as the number
+of rows and columns. For cubes, the header additionally specifies the number of
+slices.
+
+`arma_binary`  
+Numerical data stored in machine dependent binary format, with a simple header
+to speed up loading. The header indicates the type of matrix as well as the
+number of rows and columns. For cubes, the header additionally specifies the
+number of slices. `arma_binary` is the default `file_type` for .save() and
+`.quiet_save()`
+
+`csv_ascii`  
+Numerical data stored in comma separated value (CSV) text format, without a
+header. Applicable to Mat only.
+
+`hdf5_binary`  
+Numerical data stored in portable HDF5 binary format.
+Caveat: support for HDF5 must be enabled within Armadillo's configuration; the
+hdf5.h header file must be available on your system and you will need to link
+with the hdf5 library (eg. -lhdf5)
+
+`pgm_binary`  
+Image data stored in Portable Gray Map (PGM) format. Applicable to Mat only.
+Saving int, float or double matrices is a lossy operation, as each element is
+copied and converted to an 8 bit representation. As such the matrix should have
+values in the [0,255] interval, otherwise the resulting image may not display
+correctly.
+
+`ppm_binary`  
+Image data stored in Portable Pixel Map (PPM) format. Applicable to Cube only.
+Saving int, float or double matrices is a lossy operation, as each element is
+copied and converted to an 8 bit representation. As such the cube/field should
+have values in the [0,255] interval, otherwise the resulting image may not
+display correctly.
+
+```
+linspace( start, end )
+linspace( start, end, N )
+
+randi  
+randu  
+randn  
+randg  
+```
+
+To change the RNG seed, use `arma_rng::set_seed(value)` or `arma_rng::set_seed_random()` functions
+
+```
+toeplitz( A )
+toeplitz( A, B )
+circ_toeplitz( A )
+abs( X )
+accu( X )
+all( V )
+all( X )
+all( X, dim )
+any( V )
+any( X )
+any( X, dim )
+clamp( X, min_val, max_val )
+```
+
+`cond( A )`  
+Condition number of matrix A (the ratio of the largest singular value to the smallest)
+
+`conj( X )`  
+`conv_to< type >::from( X )`
+
+`cross( A, B )`  
+Calculate the cross product between A and B, under the assumption that A and B
+are 3 dimensional vectors
+
+```
+det( A )
+det( A, method )
+log_det( val, sign, A )
+```
+
+Determinant of square matrix A
+
+If A is not square, a `std::logic_error` exception is thrown 
+
+```
+diagmat( X ) 
+diagvec( A )
+diagvec( A, k )
+
+dot( A, B )
+cdot( A, B )
+norm_dot( A, B )
+```
+
+`dot(A,B)`  
+dot product of A and B, under the assumption that A and B are vectors with the
+same number of elements if you want to calculate the norm, the norm() function
+is more robust
+
+`eps( X )`  
+Obtain the positive distance of the absolute value of each element of X to the
+next largest representable floating point number
+
+```
+imag( X )
+real( X )
+rank( X )
+rank( X, tolerance )
+repmat( A, num_copies_per_row, num_copies_per_col )
+shuffle( V )
+shuffle( X )
+shuffle( X, dim )
+size( X )
+sort( V )
+sort( V, sort_direction )
+
+sort( X )
+sort( X, sort_direction )
+sort( X, sort_direction, dim )
+symmatu( A )
+symmatu( A, do_conj )
+
+symmatl( A )
+symmatl( A, do_conj )
+trace( X )
+trans( A )
+trimatu( A )
+trimatl( A )
+
+matrix_type B = fn(A)
+cube_type B = fn(A)
+```
+A and B must have the same `matrix_type`/`cube_type`
+fn(A) is one of:
+
+`exp(A)` base-e exponential: e x
+`exp2(A)` base-2 exponential: 2 x
+`exp10(A)` base-10 exponential: 10 x
+`trunc_exp(A)` base-e exponential, truncated to avoid infinity   (only for
+float and double elements)
+`log(A)` natural log: loge x
+`log2(A)` base-2 log: log2 x
+`log10(A)` base-10 log: log10 x
+`trunc_log(A)` natural log, truncated to avoid ±infinity   (only for float
+and double elements)
+`pow(A, p)`	raise to the power of p: x p
+`square(A)` square: x 2
+`sqrt(A)` quare root: x ½
+`floor(A)` largest integral value that is not greater than the input value
+`ceil(A)` smallest integral value that is not less than the input value
+`round(A)` round to nearest integer, away from zero
+`sign(A)`
+
+```
+matrix_type Y = trig_fn(X
+cube_type Y = trig_fn(X)
+```
+X and Y must have the same `matrix_type/cube_type`
+
+`trig_fn` is one of:
+cos family: `cos, acos, cosh, acosh`
+sin family: `sin, asin, sinh, asinh`
+tan family: `tan, atan, tanh, atanh`
+
+## Decompositions
+
+```
+R = chol( X )
+R = chol( X, layout )
+
+chol( R, X )
+chol( R, X, layout )
+```
+
+Cholesky decomposition of matrix X
+
+Matrix X must be symmetric and positive-definite. The argument layout is
+optional; layout is either "upper" or "lower", which specifies whether R is
+upper or lower triangular.
+
+```
+vec eigval = eig_sym( X )
+
+eig_sym( eigval, X )
+
+eig_sym( eigval, eigvec, X )
+eig_sym( eigval, eigvec, X, method )
+The eigenvalues are in ascending order
+
+cx_vec eigval = eig_gen( X )
+
+eig_gen( eigval, X )
+
+eig_gen( eigval, eigvec, X )
+
+cx_vec eigval = eig_pair( A, B )
+
+eig_pair( eigval, A, B )
+
+eig_pair( eigval, eigvec, A, B )
+```
+
+Eigen decomposition for pair of general dense square matrices A and B of the
+same size, such that `A*eigvec = B*eigvec*diagmat(eigval)`
+
+```
+vec eigval = eigs_sym( X, k )
+vec eigval = eigs_sym( X, k, form )
+vec eigval = eigs_sym( X, k, form, tol )
+
+eigs_sym( eigval, X, k )
+eigs_sym( eigval, X, k, form )
+eigs_sym( eigval, X, k, form, tol )
+
+eigs_sym( eigval, eigvec, X, k )
+eigs_sym( eigval, eigvec, X, k, form )
+eigs_sym( eigval, eigvec, X, k, form, tol )
+```
+
+Obtain a limited number of eigenvalues and eigenvectors of sparse symmetric real matrix X.
+
+k specifies the number of eigenvalues and eigenvectors.
+
+The argument form is optional; form is one of:
+"lm" = 	obtain eigenvalues with largest magnitude (default operation)
+"sm" = 	obtain eigenvalues with smallest magnitude
+"la" = 	obtain eigenvalues with largest algebraic value
+"sa" = 	obtain eigenvalues with smallest algebraic value
+
+The argument tol is optional; it specifies the tolerance for convergence
+
+```
+cx_mat Y =  fft( X )
+cx_mat Y =  fft( X, n )
+
+cx_mat Z = ifft( cx_mat Y )
+cx_mat Z = ifft( cx_mat Y, n )
+```
+
+fft(): fast Fourier transform of a vector or matrix (real or complex)
+
+ifft(): inverse fast Fourier transform of a vector or matrix (complex only)
+
+If given a matrix, the transform is done on each column vector of the matrix
+
+```
+B = inv( A )
+B = inv( A, method )
+
+inv( B, A )
+inv( B, A, method )
+
+B = inv_sympd( A )
+inv_sympd( B, A )
+```
+
+Inverse of symmetric positive definite matrix A.
+
+```
+lu( L, U, P, X )
+lu( L, U, X )
+```
+
+Lower-upper decomposition (with partial pivoting) of matrix X 
+
+```
+B = null( A )
+B = null( A, tolerance )
+
+null( B, A )
+null( B, A, tolerance )
+```
+
+Find the orthonormal basis of the null space of matrix A 
+
+```
+B = pinv( A )
+B = pinv( A, tolerance )
+B = pinv( A, tolerance, method )
+
+pinv( B, A )
+pinv( B, A, tolerance )
+pinv( B, A, tolerance, method )
+```
+
+Moore-Penrose pseudo-inverse of matrix A
+
+```
+qr( Q, R, X ) 
+
+qz( AA, BB, Q, Z, A, B )
+```
+
+Generalised Schur decomposition for pair of general square matrices A and B of the same size,
+such that `A = Q.t()*AA*Z.t()` and `B = Q.t()*BB*Z.t()`
+
+The left and right Schur vectors are stored in Q and Z, respectively
+
+In the complex-valued problem, the generalised eigenvalues are found in diagvec(AA) / diagvec(BB)
+
+```
+S = schur( X )
+
+schur( S, X )
+
+schur( U, S, X )
+```
+
+Schur decomposition of square matrix X, such that X = U*S*U.t()
+
+U is a unitary matrix containing the Schur vectors
+
+S is an upper triangular matrix, called the Schur form of X
+
+```
+X = solve( A, B )
+X = solve( A, B, method )
+
+solve( X, A, B )
+solve( X, A, B, method )
+```
+
+Solve a dense system of linear equations, `A*X = B`, where X is unknown;
+similar functionality to the \ operator in Matlab/Octave, ie. X = A \ B
+
+If A is square, solve() is faster and more accurate than using `X = inv(A)*B`
+
+If A is non-square, solve() will try to provide approximate solutions to
+under-determined as well as over-determined systems
+
+B can be a vector or matrix
+
+The number of rows in A and B must be the same 
+
+If A is known to be a triangular matrix, the solution can be computed faster
+by explicitly marking A as triangular through trimatu() or trimatl() 
+
+```
+vec s = svd( X )
+
+svd( vec s, X )
+
+svd( mat U, vec s, mat V, mat X )
+svd( mat U, vec s, mat V, mat X, method )
+
+svd( cx_mat U, vec s, cx_mat V, cx_mat X )
+svd( cx_mat U, vec s, cx_mat V, cx_mat X, method )
+```
+
+Singular value decomposition of dense matrix X 
+
+The singular values are in descending order 
+
+```
+X = syl( A, B, C )
+syl( X, A, B, C )
+```
+
+Solve the Sylvester equation, ie. $AX + XB + C = 0$, where $X$ is unknown
+
+Matrices $A, B$ and $C$ must be square sized
+
+constants (pi, inf, speed of light, ...)
+
+`datum::pi` π, the ratio of any circle's circumference to its diameter  
+`datum::inf`∞, infinity  
+`datum::nan`“not a number” (NaN); caveat: NaN is not equal to anything, even itself  
+
+`datum::e` 	base of the natural logarithm  
+`datum::sqrt2` 	square root of 2  
+`datum::eps` 	the difference between 1 and the least value greater than 1 that is representable (type and machine dependent)  
+
+`datum::log_min`  	log of minimum non-zero value (type and machine dependent)  
+`datum::log_max`	log of maximum value (type and machine dependent)  
+`datum::euler` 	  Euler's constant, aka Euler-Mascheroni constant  
+
+`datum::gratio` golden ratio  
+`datum::m_u` 	atomic mass constant (in kg)  
+`datum::N_A` 	Avogadro constant  
+
+`datum::k` 	Boltzmann constant (in joules per kelvin)  
+`datum::k_evk` 	Boltzmann constant (in eV/K)  
+`datum::a_0` 	Bohr radius (in meters)  
+
+`datum::mu_B` 	Bohr magneton  
+`datum::Z_0` characteristic impedance of vacuum (in ohms)  
+`datum::G_0` conductance quantum (in siemens)  
+
+`datum::k_e` Coulomb's constant (in meters per farad)  
+`datum::eps_0`	electric constant (in farads per meter)  
+`datum::m_e` electron mass (in kg)  
+
+`datum::eV` 	electron volt (in joules)  
+`datum::ec` 	elementary charge (in coulombs)  
+`datum::F` 	Faraday constant (in coulombs)  
+
+`datum::alpha` 	fine-structure constant  
+`datum::alpha_inv` 	inverse fine-structure constant  
+`datum::K_J` 	Josephson constant  
+
+`datum::mu_0` 	magnetic constant (in henries per meter)  
+`datum::phi_0` 	magnetic flux quantum (in webers)  
+`datum::R` 	  	molar gas constant (in joules per mole kelvin)  
+
+`datum::G` 	  	Newtonian constant of gravitation (in newton square meters per kilogram squared)  
+`datum::h` 	  	Planck constant (in joule seconds)  
+`datum::h_bar` 	Planck constant over 2 pi, aka reduced Planck constant (in joule seconds)  
+
+`datum::m_p` 	proton mass (in kg)  
+`datum::R_inf` 	Rydberg constant (in reciprocal meters)  
+`datum::c_0` 	speed of light in vacuum (in meters per second)  
+
+`datum::sigma` 	Stefan-Boltzmann constant  
+`datum::R_k` 	von Klitzing constant (in ohms)  
+`datum::b` 	  	Wien wavelength displacement law constant   
+
+For convenience, Datum<double> has been typedefed as datum while Datum<float>
+has been typedefed as fdatum
+
+`wall_clock`
+
+Simple wall clock timer class for measuring the number of elapsed seconds
+
+Examples:
+
+```
+wall_clock timer;
+
+mat A = randu<mat>(100,100);
+mat B = randu<mat>(100,100);
+mat C;
+
+timer.tic();
+
+for(uword i=0; i<100000; ++i)
+{
+C = A + B + A + B;
+}
+
+double n = timer.toc();
+
+cout << "number of seconds: " << n << endl;
+```
+
+uword is a typedef for an unsigned integer type; it is used for matrix indices
+as well as all internal counters and loops
+
+sword is a typedef for a signed integer type
+
+`cx_double` is a shorthand / typedef for std::complex<double> 
+
+`cx_float` is a shorthand / typedef for std::complex<float> 
+
+If you save the program below as example.cpp, under Linux you can compile it using:
+g++ example.cpp -o example -O2 -larmadillo
+
+```
+#include <iostream>
+#include <armadillo>
+
+using namespace std;
+using namespace arma;
+
+int main(int argc, char** argv)
+{
+mat A = randu<mat>(4,5);
+mat B = randu<mat>(4,5);
+
+cout << A*B.t() << endl;
+
+return 0;
+}
+```
+
+# RcppArmadillo
+
+```
+arma::mat
+arma::vec
+```
+
+elements are double
+
+```
+arma::mat a1 (arma::mat x) {
+  return (x);
+}
+
+arma::vec
+
+arma::mat x;
+x.print();
+x.print("text");
+```
+
+```
+R::dnorm()
+R::pnorm()
+```

@@ -1,0 +1,32 @@
+---
+{
+"title": "notes"
+}
+---
+
+²0¹
+``` bash
+// get sources
+make cold CONFIGURE_ARGS="--prefix ~/local"
+make cold install CONFIGURE_ARGS="--prefix ~/local"
+cd ~/local/bin/opam
+eval $(./opam env --switch=default)
+./opam list
+./opam search coq
+./opam install coq
+./opam exec rlwrap coqtop
+```
+
+---
+
+``` coq
+From MetaCoq.Template Require Import All
+```
+
+``` bash
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam install coq-mathcomp-ssreflect
+opam install coq-mathcomp-algebra
+opam install coq-mathcomp-field
+```
+

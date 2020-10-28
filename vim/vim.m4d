@@ -1,0 +1,261 @@
+---
+{
+"title" : "Vim"
+}
+---
+
+²0¹
+# Introduction
+
+"`.vimrc`" (vim), "`init.vim`" (neovim)
+
+`:qall!` ²q¹ `:wall`  
+`:ter` *command*  
+
+. u C-r
+
+# normal mode
+
+*operator*:  
+c ²q¹ change,  
+d ²q¹ delete,  
+y ²q¹ yank,  
+s ²q¹ send (nvim-send-to-term),  
+m ²q¹ mark (signature),  
+g ²q¹ go,  
+p ²q¹ paste  
+
+x r
+
+Motions move the cursor.  
+[ *N* ] *motion*
+
+h ²q¹ word left  
+jk ²q¹ line down/up  
+C-h l ²q¹ char right/left  
+C-[jk] ²q¹ line down/up to next char  
+
+C-o C-i
+`` ` ``
+G gg gi gE g\_  
+g< g> gs (vim-swap)  
+\% `#`  
+w W e E b B ( ) \{ \}  
+0 \$ £ `^`  
+f F ; , (shot-f)  
+gq g=  
+ö ²q¹ search  
+gn ²q¹ (motion)  
+gf ²q¹ go to file under cursor  
+c-a c-x  
+< > ²q¹ indentation
+
+#### [ and ]
+
+] [  
+( ) { }  
+<space>  
+b ²q¹ buffer  
+e ²q¹ exchange lines  
+h ²q¹ changes  
+q ²q¹ errors  
+p ²q¹ paste above/below line  
+d ²q¹ definition  
+`` ` `` - = ²q¹ mark and marker  
+x
+n
+u
+y
+
+#### registers
+". ²q¹ last inserted  
+"\% ²q¹ "`#` ²q¹ filename of buffer  
+": ²q¹ last command  
+"/ ²q¹ last serch  
+"= ²q¹ expression (calculator)  
+"q ²q¹ macro register
+
+@"
+
+#### windows
+c-w p  
+c-w m (zoom)  
+c-w w  
+c-w o  
+
+#### marks
+m. ²q¹ new mark  
+m<space> ²q¹ delete all  
+m/ ²q¹ show all marks  
+
+'*mark*
+
+# Insert mode
+
+C-r *register*  
+C-r,C-o *register*
+
+C-t C-d ²q¹ indent
+
+Entering Insert Mode:
+i I a A gi
+o O
+
+#### autocomplete
+
+C-x,C-f ²q¹ Filenames
+
+# Text Objects
+
+[ *N* ] *operator* [ *N* ] ( *motion or text-obj* )
+
+**text-obj**:
+[ i *or* a ] *object*
+
+**object**:  
+t ²q¹ xml tag block  
+' " <backtick> <  
+s w W p b B [ ]  
+n N j J c h (hank (changes))  
+q S . ; + - = \~ \_ ²s¹ `#` / | \ \& \$  
+il aL  ²q¹ line  
+ii ai ²q¹ indented block  
+ie ²q¹ entire file
+j (vim-jdaddy)
+
+# commandline
+
+`:ls`  
+`:`*number*`b`  
+`:s`  
+
+C-r,C-w
+
+# tags
+
+c-]
+
+`ctags`
+
+`hasktags .` ²q¹
+`jsctags`
+
+``` bash
+npm install -g \
+git+https://github.com/ramitos/jsctags.git
+```
+
+By default, jsctags will output a JSON file. Use the -f flag
+to output an exuberant ctags-compatible file.
+
+`:tag` *functionname-regexp*
+
+`:ts` ²q¹
+`:tl`
+
+C-w,\}
+
+# Plugins
+
+habama/vim-sendtoterm (win),
+sjl/tslime (tmux),
+nvim-send-to-term (nvim),
+vim-bufkiller,
+traces.vim,
+chrisbra/unicode.vim,
+
+#### vim-signature
+
+m*char* m[0-9] ²q¹ toggle mark/markers  
+m<space> m<BS> ²q¹ delete all marks/markers from the current buffer  
+m/ m? ²q¹ location list  
+`:SignatureToggle`
+`:SignatureRefresh`
+
+#### changesPlugin
+
+chrisbra/changesPlugin
+
+`:CL` `:CD` `:CT`
+
+#### cawk
+gc[woiI]
+
+#### vim-sandwich
+
+(sendwichrecipes)
+
+visual block, visual line.
+
+sa *obj* *addition* ²q¹ saiw( ²q¹ foo -> (foo)
+
+sd *deletion* ²q¹ sdb ²q¹ (foo) -> foo
+
+sr *deletion* *addition* ²q¹ srb" ²q¹ (foo) -> "foo"
+
+saiwf … → *fun-name*(…)
+
+saiwi … <CR> … <CR>
+
+sdifoo<CR>bar<CR> ²q¹ foowordbar -> word
+
+is as ²q¹ search for char
+
+**tags:** saiwt
+
+div`#`id1 -> <div id="id1"></div>
+
+div.class1 -> <div class="class1"></div>
+
+div[attr=value -> <div attr="value"></div>
+
+#### emmet
+
+mattn/emmet-vim
+
+html:5
+
+*name*>*[name*>*]* ²q¹ creates tags
+
+div.container>p`#`foo>a
+
+div>p ²s¹ 5
+
+div>p`#`foo\$ ²s¹ 5
+
+#### coq-au-vim
+
+:CoqStart :CoqQuit  
+:CoqNext  
+:CoqRewind  
+:CoqTCursor  
+:CoqQuery {text}  
+:CoqSet {options}  
+
+#### coc
+
+`.config/coc/ultisnips/vim.snippets`
+
+# regex
+
+Vim's default 'magic' setting makes characters
+have the same meaning as in grep, and `\v` (very magic) makes them the same as
+the extended regular expressions used by egrep. Regular expressions in scripts
+should always specify one of `\v,` `\m`, `\M`, or `\V,` to make them immune to
+the user's 'magic' setting.
+
+The `:substitute` command has the `:smagic` and `:snomagic` alternate forms (the same
+as `\m` and `\M`), so you can search and replace with `%sno/regex/new_text/g`.
+
+# neovim
+
+user runtime folder:
+`~/.config/nvim/`
+
+`filetype.vim`
+
+# win
+
+runtime data/sandwichrecipes.vim
+
+packadd vim-sandwich

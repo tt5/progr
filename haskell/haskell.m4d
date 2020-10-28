@@ -1,0 +1,383 @@
+---
+{
+"title": "notes"
+}
+---
+
+²0¹
+Function arrows associate to the right, that is, W→X→Y→Z is
+equivalent to W→(X→(Y→Z)).
+
+`ghc-pkg find-module --simple-output` *module-name*
+
+hoogle
+
+\$HOME/.ghc  
+.ghci.conf
+
+function composition
+`(.) f g x = f (g x)`  
+function application (a function)
+`($) (f x) = (f $ x)`
+
+zip
+
+iterate
+
+lookup
+
+`scanl ( `$⊕$` ) s0 [x,y,z] =`
+
+`[ s0,`  
+`  s0 `$⊕$` x,`  
+` (s0 `$⊕$` x) `$⊕$` y,`  
+`((s0 `$⊕$` x) `$⊕$` y ) `$⊕$` z ]`  
+
+```
+pow2s = scanl (+) 1 pow2s
+take 4 pow2s
+```
+-m4 esyscmd(¹stack ./examples/some.hs ²)
+
+fibs = scanl (+) 1 (0 : fibs)
+
+`o2s = a : scanl ( `$⊕$` ) b o2s`
+
+```
+pells = 0 : scanl (\y z -> 2*y+z) 1 pells
+
+rotate :: Int -> [a] -> [a]
+rotate = drop <> take
+```
+
+\minisec{list}
+
+:  
+[]\q empty list  
+`map`\q fmap for lists  
+`head`\q tail  
+`last`\q init  
+`length`  
+`null`  
+`reverse`  
+`drop` *int*  
+`elem` *element*  
+`take` *int* (cycle *list*)  
+`replicate` *int* *list*  
+`!!`\q index  
+
+\minisec{tuples}
+
+`(1, 2)`
+
+`fst`\quad `snd`
+
+```
+(,,) <$> "1" <*> "2" <*> "3"
+```
+
+\minisec{typeclasses}
+
+`Eq`\q eqality testing  
+`Ord`\q ordering  
+`Show`\q string representation  
+`Read`  
+`Enum`  
+`Bonded`  
+`Num`  
+`Integral`  
+`Floating`  
+
+# Category
+
+In Haskell, we define a category by specifying the hom-set as a type. Then we
+define the composition of morphisms and pick the identity morphisms.
+
+# Functor
+
+A given type has at most one valid instance of Functor.
+
+functor laws:
+
+1. `fmap id = id`  
+2. `fmap (g . h) = (fmap g) . (fmap h)`
+
+1) implies 2)
+
+`<$>`
+
+```
+fmap (+3) [1,2]
+fmap (:[]) [1,2]
+```
+
+applicative:  
+`[(*2),(+3)] <*> [1,2,3]`  
+liftA
+
+[] (list constructor)  
+Maybe  
+Either  
+((,) e)  
+((->) e)  
+IO  
+
+A monoidal functor is a homomorphism of monoidal categories.
+
+# applicative
+
+monoidal functor
+
+```
+ZipList
+[(:[1]),(:[2]),(:[3])] <*> [3,4,5]
+```
+
+# Monoid
+
+`mempty`\q Identity  
+`mappend`\q binary function  
+`mconcat`\q folds the mappend function between the elements of an array of
+Monoids  
+
+```
+mempty `mappend` x = x
+x `mappend` mempty = x
+(x `mappend` y) `mappend` z = `mappend` (x `mappend` z)
+```
+
+# monad
+
+A monad is a way to abstract a control-flow effect, so that users write a
+series of pure functions sequences between the effect points of their program.
+
+`(>>=)`\q bind
+LiftM
+
+`x >>= y = join (fmap y x)`
+
+Identity  
+Cont  
+State  
+Stream  
+Option  
+Future  
+
+\minisec{examples}
+
+```
+> [1,2,3] >>= \x -> [x, x*1000]
+[1,1000,2,2000,3,3000]
+```
+
+```
+maybeHead :: [a] -> Maybe a
+maybeHead (x:xs) = Just x
+maybeHead _ = Nothing
+
+> xs = Just [1,2,3]
+> xs >>= maybeHead
+Just 1
+
+first = maybeHead ([1,2,3] :: [Int])
+  case first of
+    (Just x) -> Just (x*10)
+> Just 10
+
+result = 
+    Just 0        >>= \x ->
+    Just (x + 1)  >>= \x ->
+    Just (x * 3)  >>= \x ->
+    Just (show x) >>= \x ->
+    Just ("And the answer is " <> x)
+
+result = do 
+    x <- Just 0
+    x <- Just (x + 1)
+    x <- Just (x * 3)
+    x <- Just (show x)
+    Just ("And the answer is " <> x)
+```
+
+You don’t need to have an `x <-` for any of the lines, although you won’t be able
+to reference previous values if you don’t.
+
+If we wanted to, we could use pure instead of Just. As long as we use Just at
+least once, Haskell will know we want the output of our do expression to be a
+Maybe value, so it will call the version of pure that returns a Maybe.
+
+By the way, reusing previous names in do expressions is called shadowing and it
+is generally considered bad practice.  Note that if any of these evaluate to
+Nothing, the whole thing will evaluate to Nothing.
+
+\minisec{laws}
+
+The first law is that pure x `>>=` f should be equivalent to f x. Remember, pure
+just wraps a value up in some other type, like Maybe. Then `>>=` unwraps it and
+passes it to f. Together, they undo each other.
+
+The second law is that m `>>=` pure should be equivalent to m. This is because
+`>>=` is responsible for unwrapping m and passing it to the function on the right
+(in this case pure). Then pure wraps it right back up. This means they should
+undo each other the other way, too.
+
+The third law is that `(m >>= f) >>= g` should be equivalent to m `>>= (\x -> f x
+>>= g).` What it’s basically saying is that monads should be associative - the
+parentheses shouldn’t really matter
+
+
+## free monad
+
+```
+liftFree :: Functor f => f a -> Free f a  -- "into" the monad
+foldFree :: Functor f => (f r -> r) -> Free f r -> r  -- "get out" of the monad
+```
+
+## IO
+
+`print`  
+`getLine`\q takes no arguments and gets user input  
+`putStrLn`\q takes a string and prints it  
+`readFile`\q takes a string (a filename) and returns that file's contents  
+
+`sequence`\q takes a list of IO actions and return an IO action that executes
+all of them.
+
+we can chain IO a actions together with `>>`  
+`helloWorldDouble = putStrLn "helloworld1" >> putStrLn "helloworld2"`
+
+`helloWorldDouble = putStrLn "helloworld1" >>= (\_ -> putStrLn "helloworld2")`  
+`beLoud = getLine >>= (\x -> putStrLn (x <> "!!"))`
+
+Notice that even though getLine returns an IO String, the x is just a regular
+String. The bind operator “unwraps” it.
+
+```
+spongebob =
+    putStrLn "Are you ready, kids?" >>= \_ -> (
+    getLine                         >>= \_ -> (
+    putStrLn "I can't hear you!"    >>= \_ -> (
+    getLine                         >>= \_ -> (
+    putStrLn "Ohhhhh!"))))
+```
+
+```
+spongebob = do
+    putStrLn "Are you ready, kids?"
+    getLine
+    putStrLn "I can't hear you!"
+    getLine
+    putStrLn "Ohhhhh!"
+```
+
+```
+spongebob =
+    putStrLn "Are you ready, kids?" >>= \_ ->
+    getLine                         >>= \first ->
+    putStrLn "I can't hear you!"    >>= \_ ->
+    getLine                         >>= \second ->
+    putStrLn "Ohhhhh!"              >>= \_ ->
+    putStrLn ("Results: You said '" <> first <> "' the first time, and '" <> second <> "' the second time")
+```
+
+```
+spongebob = do
+    putStrLn "Are you ready, kids?"
+    first <- getLine
+    putStrLn "I can't hear you!"
+    second <- getLine
+    putStrLn "Ohhhhh!"
+    putStrLn ("Results: You said '" <> first <> "' the first time, and '" <> second <> "' the second time")
+```
+
+```
+spongebob = do
+    _      <- putStrLn "Are you ready, kids?"
+    first  <- getLine
+    _      <- putStrLn "I can't hear you!"
+    second <- getLine
+    _      <- putStrLn "Ohhhhh!"
+    putStrLn ("Results: You said '" <> first <> "' the first time, and '" <> second <> "' the second time")
+```
+
+Note that when using do notation, if the first element is type IO a, every other element has to be some other IO type.
+
+```
+willWork = do
+    putStrLn "hello"
+    two <- pure ((1 + 1) :: Int)
+    putStrLn . show $ two
+
+willWork = let two = (1 + 1) in do
+    putStrLn "hello"
+    putStrLn . show $ two
+```
+
+do-notation
+
+-    insert the word do  
+-    turn >>= into <-  
+-    delete ->  
+-    delete \  
+-    swap each side of <-  
+
+you can write local definitions in the middle:
+
+```
+do x <- getLine
+   let x1 = x ++ x
+       x2 = take 10 x1
+   putStrLn x2
+```
+
+This represents:
+
+```
+getLine >>= \x -> let {x1 = x ++ x; x2 = take 10 x1}
+```
+
+you are not restricted to  
+variable <- action  
+you are allowed the general  
+pattern <- action
+
+## Reader / function / environment monad
+
+I a cartesian closed category / type theory $C$, the reader monad $[,-]:C \to
+C$ is right adjoint to the writer comonad $W \times (-)$.  Just as the writer
+monad is cannonically a monad when $W$ is a monoid, so the reader monad is a
+comonad in that case, and then it is sometimes called the traced comonad.  The
+composition of writer comonad followed by reader monad is the state monad.
+
+# Syntax
+
+`data`\q type constructor (parametrized type)
+
+```
+newtype <Type Name> = <Data Constructor Name> <Data Constructor Input Type>
+```
+
+record syntax  
+type alias
+
+
+\minisec{Sections}
+There is a special syntax for partial application on infix operators.
+Essentially, you only give one of the arguments to the infix operator, and it
+represents a function which intuitively takes an argument and puts it on the
+"missing" side of the infix operator.
+
+`(2^)`\q (left section) is equivalent to `(^) 2`, or more verbosely `\x -> 2 ^ x`
+
+`(^2)`\q (right section) is equivalent to flip `(^) 2`, or more verbosely `\x ->
+x ^ 2`
+
+Note: as an exception, the "-" (subtraction) operator cannot do a right
+section, because that would be interpreted as unary negation in Haskell syntax.
+The Prelude function "subtract" is provided for this purpose. Instead of (- e),
+you need to write (subtract e).  Note: Iterated sections are also possible, as
+long the associativity is correct: (1+2+).
+
+# Either
+
+`either fR fL someEither`

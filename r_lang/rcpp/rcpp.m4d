@@ -1,0 +1,72 @@
+---
+{
+"title": "notes"
+}
+---
+
+²0¹
+Many function names in R may contain periods. For example, the function name
+`write.table()` delimits words with a period. However, in C++ the period
+indicates a method. This means that C++ object names can’t include a period.
+Camel code or underscores are good alternatives.
+
+in R the vectors are 1-based, meaning the first element is accessed with a 1.
+In C++ the vectors are zero-based, meaning the first element is accessed with a
+zero. This creates an opportunity for one-off errors. If you notice that the
+number of elements you’ve passed to C++ and back are off by one element, this
+would be something good to check.
+
+``` r
+#include <Rcpp.h>
+#include <experimental/any>
+using namespace Rcpp;
+
+// [[Rcpp::plugins(cpp17)]]
+// [[Rcpp::export]]
+void useAny() {
+    std::experimental::any x(5);
+    // some more here ...
+    x = "cat";
+}
+```
+
+``` r
+NA_REAL
+R_NegInf
+R_PosInf
+R_IsNA()
+R_IsNaN()
+
+Rcpp::NumericMatrix
+Rcpp::LogicalVector
+Rcpp::IntegerVector
+Rcpp::CharacterVector
+Rcpp::RawVector
+Rcpp::Named
+```
+
+`Rcpp::as` from R to C++  
+`Rcpp::wrap`
+
+Finally, there’s a grab bag of sugar functions that mimic frequently used R functions:
+
+Math functions:
+
+``` r
+abs(), acos(), asin(), atan(), beta(), ceil(), ceiling(),
+choose(), cos(), cosh(), digamma(), exp(), expm1(), factorial(), floor(),
+gamma(), lbeta(), lchoose(), lfactorial(), lgamma(), log(), log10(), log1p(),
+pentagamma(), psigamma(), round(), signif(), sin(), sinh(), sqrt(), tan(),
+tanh(), tetragamma(), trigamma(), trunc().
+```
+
+Scalar summaries: mean(), min(), max(), sum(), sd(), and (for vectors) var().
+
+Vector summaries: cumsum(), diff(), pmin(), and pmax().
+
+Finding values: `match()`, `self_match()`, `which_max()`, `which_min()`.
+
+Dealing with duplicates: duplicated(), unique().
+
+d/q/p/r for all standard distributions.
+

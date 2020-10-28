@@ -1,0 +1,31 @@
+---
+{
+"title": "notes"
+}
+---
+
+²0¹
+Bioconductor
+
+# Bio3d
+
+Protein Data Bank files (or PDB files) are the most common format
+for the distribution and storage of high-resolution biomolecular coordinate data.
+
+```
+library(bio3d)
+lbio3d()
+```
+
+`pdb <- read.pdb("1hel")` rcsb.org
+
+For full Bio3D functionality you should have MUSCLE, DSSP, and NetCDF (headers
+and libraries) installed on your system and in the search path for executables.
+
+# other
+
+```
+conda install -c schrodinger pymol
+```
+
+`gh/molstar/molstar`

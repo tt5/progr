@@ -1,0 +1,118 @@
+---
+{
+"title" : "jshon"
+}
+---
+
+²0¹
+https://github.com/keenerd/jshon
+
+# JSON
+
+\textit{[} object *or* array \textit{]}$^+$
+
+object:  
+\textbf{\{} \textit{[} string : value \textit{[} , string : value \textit{]}$^{\star}$ \textit{]}$^?$ \textbf{\}}
+
+array:  
+\textbf{[} \textit{[} value \textit{[} , value \textit{]} \star \textit{]}? \textbf{]}
+
+value:  
+•  
+string  
+number  
+**true**  
+**false**  
+**null**
+
+number:  
+int \textit{[} . \textit{[} 0 *to* 9 \textit{]}?
+\textit{[} \textit{[} e *or* E \textit{]} \textit{[} + *or* - \textit{]}?
+\textit{[} 0 *to* 9 \textit{]}+ \textit{]}?
+
+int:  
+\textit{[} - \textit{]}\textsubscript{?} \textit{[} 0 *or* \textit{[}
+\textit{[} 1 *to* 9 \textit{]} \textit{[} 0 *to* 9 \textit{]} ²s¹ \textit{]} \textit{]}
+
+string:  
+**"** \textit{[} char \textit{]} ²s¹ **"**
+
+char:  
+*any Unicode character except* " *or* \\ *or* control-character
+
+control-character:  
+\\ \textit{[} *one of* " \\ / b f n r t u*four-hex-digits* \textit{]}
+
+# jshon
+
+`jshon [`actions`]`
+
+`-u`\quad unescape string  
+`-t`\quad id type (str, object, list, number, bool, null)  
+`-l`\quad length  
+`-k`\quad keys (object)  
+
+`-e` *index*\quad extract (object, array).  
+`-i` *index* insert, opposite of extract, merges json up
+the stack. objects will overwrite, arrays will insert. Arrays
+can take negative numbers or 'append'  
+`-d` *index*\quad remove an element from an objet or array. Negative array indexes will wrap around.  
+`-a`\quad (across) maps the remaining actions across the selected element. Only
+works on objects and arrays. Multiple -a calls can be nested, though the need
+is rare in practice.  
+`-s` *value*\quad load string (adds json escapes)  
+`-n` *value*\quad load nonstring (`t f n [] {}`)  
+`-p`\quad pop stack / undo last manipulation  
+`-j`\q json literal (preserves json escapes, display value)
+
+`-F` *file*  
+`-I`\quad in-place file editing (requires -F)  
+`-S`\quad sort keys when writing objects  
+`-Q`\quad quiet  
+`-C`\quad continue through errors  
+`-P`\q detect and ignore JSONP wrapper, if present
+`-0`\q null delimiters
+
+Use *extract* (`-e`) to dive into json tree, *delete* (`-d`,)
+*string* (`-s`), *nonstring* (`-n`) to change things, and
+*insert* (`-i`) to push the changes back up the tree.
+
+`cat epjshon.jshon`
+``` json
+m4 esyscmd(¹ cat epjson.json | jshon ²)
+```
+
+Most common read-only uses will only need several `-e` actions and one `-a`
+in the middle of them.
+
+`jshon -e "c" -e "d"`
+``` json
+m4 esyscmd(¹ cat epjson.json | jshon -e "c" -e "d" ²)
+```
+
+---
+```
+jshon -e "c" -e "d" -i "f" -d "d"
+esyscmd( cat epjson.json | jshon -e "c" -e "d" -i "f" -d "d" )
+
+jshon -e "c" -s "d" -i "f"
+esyscmd( cat epjson.json | jshon -e "c" -s "d" -i "f" -d "d" )
+
+jshon -e "c" -n 1 -i "f" -d "d"
+esyscmd( cat epjson.json | jshon -e "c" -n 1 -i "f" -d "d" )
+
+jshon -e "c" -n 1 -i "f" -d "d" -i "c"
+esyscmd( cat epjson.json | jshon -e "c" -n 1 -i "f" -d "d" -i "c" )
+
+jshon -e b -d 0 -s foo -i 0
+esyscmd( cat epjson.json | jshon -e b -d 0 -s foo -i 0 )
+
+jshon -e b -a -t
+esyscmd( jshon -e b -a -t < epjson.json )
+
+jshon -e c -e d -u -p -e e -u
+== `jshon -ec -ed -upee -u`
+
+jshon -n {} -s one -i vara
+esyscmd( jshon -n {} -s one -i vara )
+```

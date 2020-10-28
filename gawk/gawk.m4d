@@ -1,0 +1,229 @@
+---
+{
+"title": "Gawk"
+}
+---
+
+²0¹
+An awk **program** (or script) consists of
+a series of *rules* and *function definitions* interspersed.
+A **rule** contains a *pattern* and an *action*, either of which (but not both)
+may be omitted.
+```
+m4 esyscmd(¹cat ./filesawk/test.awk²) ¹=>²
+m4 esyscmd(¹gawk -f ./filesawk/test.awk filesawk/data²)
+```
+
+String indices start at one.
+
+You cannot have a variable and an array with the same name.
+
+`$ awk -b -f` *file* `\`  
+`-v var1="$`*shellvar*`"` `\`  
+`'`*program*`'` `\`  
+*datafile* `var2=`*val* *datafile*
+
+`$1=$1`\quad force record to be reconstituted
+
+`BEGINFILE`  
+`ENDFILE`
+
+**numeric constant**\quad `105 1.05e+2 1050e-1`  
+**string literal**\quad eight-bit ASCII characters.  
+`FILENAME`\quad name of the current input file  
+`RS`\quad record separator, ` =""` newlines  
+`FS`\quad field separator, `=""` each character  
+`RT`\quad matched input text (record separation)  
+`FPAT`\quad regex, describes the contents of each field  
+`ORS`\quad output record separator  
+`FIELDWIDTHS`\quad fixed-width field splitting  
+`OFS`\quad output field separator  
+`FNR`\quad number of records that have been read so far from the currend input file.  
+`NR`\quad number of input records  
+`NF`\quad number of fields in the current record  
+`BINMODE`\quad binary mode  
+`CONFMT`\quad conversion format `%.6g`  
+`OFMT`\quad output format `%.6g`  
+`IGNORECASE`\quad 0, cmdl or BEGIN  
+`TEXTDOMAIN`\quad This variable indicates the application’s text domain.
+The default value is "messages".  
+`PROCINFO["FS"]`\quad `"FS"`, `"FPAT"`, `"FIELDWIDTHS"`, `"egid"`, `"euid"`, `"gid"`, `"pgrpid"`,
+`"pid"`, `"ppid"`, `"sorted_in"`, `"strftime"`, `"uid"`, `"version"`, `"group"`*N*.  
+`ERRNO`\quad string  
+`ARGV[ARGIND]`\quad is always the current filename. Indexed from 0 to `ARGC`-1.  
+`ARGC`\quad number of command-line arguments present.  
+`ARGV`\quad index in `ARGV` of the current file being processed.  
+`ENVIRON[]`  
+`LINT`  
+`SUBSEP`\quad separator in index of  
+multidimensional arrays, `\034`.  
+`RLENGTH`  
+`RSTART`  
+`\$`*expr*\quad reference to a field  
+`\$0`\quad whole record
+
+# Regexp
+
+`\s` `\S` `\w` `\W` `\<` `\>` `\y` `\B`
+
+# Pattern
+
+`BEGIN`  
+`END`  
+`/`*regular expression*`/`  
+*relational-expression*  
+*pattern* `&&` *pattern*  
+*pattern* `||` *pattern*  
+*pattern* `?` *pattern* `:` *pattern*  
+`(` *pattern* `)`  
+`!` *pattern*  
+*range-pattern*  
+
+# expressions
+
+A *function call* is an
+expression and its value is the value returned by the function.
+Awk expressions are what you write in the call for the *arguments*.
+Each time the call is
+executed, these expressions are evaluated, and the values become the actual arguments.
+Whitespace characters (spaces and TABs) are not allowed between
+the function name and the open-parenthesis of the argument list.
+The order of evaluation of the expressions used for the function’s
+parameters is undefined.
+
+Assign values to variables.  
+*variable*`=`*expression*  
+
+# Action and Statements
+
+An **action** consists of one or more awk statements, enclosed in curly braces.
+The statements are separated by newlines or semicolons.
+An omitted action is equivalent to `{ print $0 }`.
+
+Statements ignore newline after: `, { ?: || && do else`
+
+The **break statement** jumps out of the innermost for, while, or do loop that
+encloses it.  The break statement is also used to break out of the switch
+statement.
+
+Similar to break, the **continue statement** is used only inside for, while,
+and do loops.  It skips over the rest of the loop body, causing the next cycle
+around the loop to begin immediately.
+
+**Deletion statement**, for deleting array elements.
+
+`delete` *array*`[`*index-expression*`]`
+
+\minisec{control statements}
+
+`if` `(` *condition* `)` *statement* \emph{[} `else` *statement* \emph{]}  
+
+The condition is considered false if its value is zero or the nul
+string; otherwise, the condition is true.
+
+`while` `(` *conditional* `)` *statement*  
+
+`for` `(`*initialization*`;` *condition*`;` *increment*`)` *body*  
+
+for iterating over all the indices of an array:  
+`for (` *var* `in` *array* `)` *body*  
+The order in which elements of the array are accessed by this statement is determined
+by the internal arrangement of the array elements within awk and normally cannot be
+controlled or changed.
+
+`do` *body* `while (` *condition* `)`  
+
+`switch` `(` *expression* `)` `{`  
+`case` *value* or *regular-expression* `:`  
+*case-body*  
+`default:`  
+*default-body*  
+`}`
+
+Once a match to a given case is made, the case statement bodies execute until a
+`break`, `continue`, `next`, `nextfile` or `exit` is encountered
+
+\minisec{compound statements}
+
+Consist of one or more statements enclosed in curly braces. A compound
+statement is used in order to put several statements together in the body of an `if`,
+`while`, `do`, or `for` statement.
+
+\minisec{input statements}
+
+`getline`  
+the rest of the current action executes
+with a new input record.
+
+`getline`  
+`getline` *var*  
+`getline <` *file*  
+`getline` *var* `<` *file*  
+`command | getline`  
+`command | getline` *var*  
+`command |& getline`  
+`command |& getline` *var*  
+
+`next`  
+The next statement is not allowed inside `BEGINFILE` and `ENDFILE` rules.
+The next statement forces awk to immediately stop processing the current record and go
+on to the next record.
+
+`nextfile`  
+the nextfile statement instructs awk to stop processing the current data file.
+Upon execution of the nextfile statement, `FILENAME` is updated to the name of
+the next data file listed on the command line, `FNR` is reset to one, and
+processing starts over with the first rule in the program. If the nextfile
+statement causes the end of the input to be reached, then the code in any `END`
+rules is executed. An exception to this is when nextfile is invoked during
+execution of any statement in an `END` rule; In this case, it causes the
+program to stop immediately.  `ARGIND` is incremented With gawk, nextfile is
+useful inside a `BEGINFILE` rule to skip over a file that would otherwise cause
+gawk to exit with a fatal error. In this case, `ENDFILE` rules are not
+executed.
+
+`exit`  
+If an argument is supplied to exit, its value is used as the exit status code
+for the awk process. If no argument is supplied, exit causes awk to return a
+“success” status.
+
+\minisec{output statements}
+
+`print` [ *expression-list* ] [ `>` *expression* ]  
+`printf` *format* [ `,` *expression-list* ] [ `>` *expression* ]
+
+`$`*N*\quad positional specifier
+
+`printf(`*Format*`,`*variable*`,` *variable*`,`...`)`
+
+```
+p = 3
+s = "abcdefg"
+printf "%.*s\n", p, s
+```
+
+# function definition
+
+`function(` *arguments* `) {...}`
+
+`return` [*expression*]
+
+With *indirect* function calls, you
+tell gawk to use the value of a variable as the name of the function to call.
+
+```
+the_func = "sum"
+result = @the_func()
+```
+
+## Functions
+
+`asort(` source [`,` dest [`,` how ] ]`)`  
+`asorti(` source [`,` dest [`,` how ] ]`)`  
+`gensub(` regexp`,` replacement`,` how [`,` target]`)`  
+`patsplit(` string`,` array [`,` fieldpat [`,` seps ] ]`)`  
+`sprintf(` format`,` expression1`,` ...`)`  
+`close`  
+`fflush`  
+`system`  
+`isarray`
