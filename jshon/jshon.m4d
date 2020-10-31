@@ -1,6 +1,7 @@
 ---
 {
-"title" : "jshon"
+"title" : "jshon",
+"latex": "true"
 }
 ---
 
@@ -9,8 +10,9 @@ https://github.com/keenerd/jshon
 
 # JSON
 
-\textit{[} object *or* array \textit{]}$^+$
+*[* object *or* array *]*$^+$
 
+---
 object:  
 \textbf{\{} \textit{[} string : value \textit{[} , string : value \textit{]}$^{\star}$ \textit{]}$^?$ \textbf{\}}
 

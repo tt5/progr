@@ -12,9 +12,7 @@ Camel code or underscores are good alternatives.
 
 in R the vectors are 1-based, meaning the first element is accessed with a 1.
 In C++ the vectors are zero-based, meaning the first element is accessed with a
-zero. This creates an opportunity for one-off errors. If you notice that the
-number of elements you’ve passed to C++ and back are off by one element, this
-would be something good to check.
+zero.
 
 ``` r
 #include <Rcpp.h>
@@ -48,8 +46,6 @@ Rcpp::Named
 `Rcpp::as` from R to C++  
 `Rcpp::wrap`
 
-Finally, there’s a grab bag of sugar functions that mimic frequently used R functions:
-
 Math functions:
 
 ``` r
@@ -60,13 +56,13 @@ pentagamma(), psigamma(), round(), signif(), sin(), sinh(), sqrt(), tan(),
 tanh(), tetragamma(), trigamma(), trunc().
 ```
 
-Scalar summaries: mean(), min(), max(), sum(), sd(), and (for vectors) var().
+Scalar summaries: `mean(), min(), max(), sum(), sd(), and (for vectors) var()`
 
-Vector summaries: cumsum(), diff(), pmin(), and pmax().
+Vector summaries: `cumsum(), diff(), pmin(), and pmax()`
 
 Finding values: `match()`, `self_match()`, `which_max()`, `which_min()`.
 
-Dealing with duplicates: duplicated(), unique().
+Dealing with duplicates: `duplicated(), unique().`
 
-d/q/p/r for all standard distributions.
+`d/q/p/r` for all standard distributions.
 

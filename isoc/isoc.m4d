@@ -231,7 +231,7 @@ Preprocessing tokens can be seperated by white space (comments, white space char
 (space, htab, vtab, nl, ff)).
 
 predefined identifiers:
-```
+```c
 __func__
 ```
 
@@ -239,7 +239,7 @@ The identifier `__VA_ARGS__` shall occur only in the replacement-list of a funct
 macro that uses the ellipsis notation in the parameters.
 
 Predefined Macros:
-```
+```c
 __DATE__
 __FILE__
 __LINE__
@@ -307,13 +307,13 @@ ERROR: cannot assign to constant object 'c'
 `void f(int c);`  
 OK: this is a (redundant) declaration of the f above
 
-```
+```c
 void foo(int bar(float, double));
 ```
 
 becomes
 
-```
+```c
 void foo(int (*bar)(float, double));
 
 void foo(int c[10]);
@@ -322,7 +322,7 @@ void bar(int m[10][20]);
 
 becomes
 
-```
+```c
 void foo(int *c);
 void bar(int (*m)[20]);
 ```
@@ -344,7 +344,7 @@ probably dumb but OK
 `void f(int c[1])`  
 read this as "`void f(int *c)`"  
 
-```
+```c
 {
   c[1] = 3;
 }
@@ -379,14 +379,14 @@ WARNING if the compiler does some data-flow analysis, OK otherwise
 `int (*pa)[10];`  
 'pa' is a pointer to array 10 of int
 
-```
+```c
 p = a;
 pa = &a;
 ```
 
 The four statements below have the same effect
 
-```
+```c
 a[1] = 3;
 p[1] = 3;
 (*pa)[1] = 3;
@@ -407,7 +407,7 @@ Incompatible types: argument is '`int*`' but parameter is '`int (*)[10]`'
 Incompatible types: argument is '`int (*)[11]`' but parameter is '`int (*)[10]`'  
 `}`  
 
-```
+```c
 #include <stdint.h>
 #include <assert.h>
 void g()
@@ -425,7 +425,7 @@ this is the same as
 
 (x,y declared for descriptive purposes only)
 
-```
+```c
 int f(void), *fip(), (*fip)();
 int (*apfi[3])(int *x, int *y);
 int (*fpfi(int (*)(long),int))(int,...);
@@ -518,7 +518,7 @@ a compound literal is an lvalue.
 
 # Keywords
 
-```
+```c
 bool
 int
 double
@@ -542,7 +542,7 @@ macro parameter
 
 # main()
 
-```
+```c
 int main(void) {}
 int main( int argc, char *argv[] ) {}
 ```
@@ -555,7 +555,7 @@ program parameters: `argv[1]` bis `argv[argc-1]`
 # Character set
 
 **basic character set**:
-```
+```c
 a-z A-Z 0-9 _
 ! ? : ; .
 ( ) { } [ ] < > ' "
@@ -628,7 +628,7 @@ current translation. Program image.
 
 # Preprocessing
 
-```
+```c
 #define DST(name) name##_s name##_t
 DST(object);
 ```
@@ -690,7 +690,7 @@ to form a new one.
 
 # some
 
-```
+```c
 #define DEBUG(fmt, ...) \
 printf(fmt, __VA_ARGS__);
 ```
@@ -1136,7 +1136,7 @@ its side effects.  If a function call is evaluated as an expression statement
 for its side effects only, the discarding of its value may be made explicit by
 converting the expression to a void expression by means of a cast:
 
-```
+```c
 int
 p(int);
 /* ... */
@@ -1146,7 +1146,7 @@ p(int);
 A null statement may also be used to carry a label just before the closing `}`
 of a compound
 
-```
+```c
 while (loop1) {
 /* ... */
 while (loop2) {
@@ -1221,7 +1221,7 @@ Each parameter has automatic storage duration; its identifier is an lvalue.
 
 A parameter identifier cannot be redeclared in the function body except in an enclosed block.
 
-```
+```c
 extern int max(a, b)
 int a, b;
 {
@@ -1238,13 +1238,13 @@ declaration lists (not prototype-format parameter type and identifier
 declarators) is an obsolescent feature.
 
 To pass one function to another, one might say
-```
+```c
 int f(void);
 /* ... */
 g(f);
 ```
 Then the definition of g might read
-```
+```c
 void g(int (*funcp)(void))
 {
 /* ... */
@@ -1252,7 +1252,7 @@ void g(int (*funcp)(void))
 }
 ```
 or, equivalently,
-```
+```c
 void g(int func(void))
 {
 /* ... */
@@ -1466,7 +1466,7 @@ replaces `x[0]` with `{ {'q','\0','\0','\0'}, 0 }`
 
 # gnu gsl
 
-```
+```c
 gsl-config --libs
 gsl-config -cflags
 
@@ -1491,7 +1491,7 @@ int gsl_fcmp(double x, double y, double epsilon)
 
 ## Vector and matrix
 
-```
+```c
 gsl_vector.h
 gsl_matrix.h
 
@@ -1504,7 +1504,7 @@ n1 rows, n2 columns
 `void ...free( gls_vector * v)`  
 or matrix
 
-```
+```c
 double ...get( const gsl_vector *, size_t i)
 void ...set( gsl_vector * v, size_t i, double x)
 double * ...ptr( gsl_vector * v, size_t i)
@@ -1527,7 +1527,7 @@ rows of zero).
 
 $m\geq n$
 
-```
+```c
 int gsl_linalg_SV_decomp( gsl_matrix * A, gsl_vector * S, gsl_vector * work)
 ```
 work: length $n$.
@@ -1535,7 +1535,7 @@ work: length $n$.
 On output the matrix $A$ is replaced by $U$.
 The matrix $V$ contains the elements of $V$ (in untransposed form).
 
-```
+```c
 int gls_linalg_SV_solve(
   const gsl_matrix * U,
   const gsl_matrix * V,
@@ -1555,7 +1555,7 @@ rows than columns the system is solved in the
 leas square sense, returning the solution $x$ which
 minimizes $||Ax-b||_2$
 
-```
+```c
 $ gcc -c file.c
 $ gcc -L/usr/local/atlas/lib file.o -lgsl -lcblas -latlas -lm
 ```

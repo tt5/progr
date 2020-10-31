@@ -5,7 +5,7 @@
 ---
 
 ²0¹
-```
+```cpp
 mat 	 =  	Mat<double>
 fmat 	 =  	Mat<float>
 cx_mat 	 =  	Mat<cx_double>
@@ -21,7 +21,7 @@ Elements are stored with column-major ordering.
 
 Constructors:
 
-```
+```cpp
 mat()
 mat(n_rows, n_cols)
 mat(n_rows, n_cols, fill_type)
@@ -33,8 +33,8 @@ mat(vec)
 mat(rowvec)
 mat(initializer_list)
 mat(string)
-mat(std::vector)   (treated as a column vector)
-cx_mat(mat,mat)   (for constructing a complex matrix out of two real matrices) 
+mat(std::vector)   //(treated as a column vector)
+cx_mat(mat,mat)   //(for constructing a complex matrix out of two real matrices) 
 ```
 
 `fill::zeros` =	set all elements to 0  
@@ -57,7 +57,7 @@ attributes
 `.n_elem` total number of elements; present in Mat, Col, Row, Cube, field and SpMat
 
 The variables are read-only; to change the size, use
-```
+```cpp
 .set_size()
 .copy_size()
 .zeros()
@@ -71,7 +71,7 @@ element/object access via `()`, `[]` and `.at()`
 
 using the `<<` operator is slower than using initialiser lists
 
-```
+```cpp
 vec v = { 1, 2, 3 };
 
 mat A = { {1, 3, 5},
@@ -115,10 +115,8 @@ mat A = { {1, 3, 5},
 .insert_cols( col_number, number_of_cols, set_to_zero )
 .shed_row( row_number )
 ```
-`.shed_rows( first_row, last_row )`	member functions of Mat, Col and SpMat
-```
-.shed_col( column_number )
-```
+`.shed_rows( first_row, last_row )`	member functions of Mat, Col and SpMat  
+`.shed_col( column_number )`  
 `.shed_cols( first_column, last_column )` member functions of Mat, Row and SpMat
 ```
 .swap_rows( row1, row2 )
@@ -145,7 +143,7 @@ Member functions:
 
 Iterator types:
 
-```
+```cpp
 mat::iterator
 vec::iterator
 rowvec::iterator
@@ -155,7 +153,7 @@ random access iterators, for read/write access to elements (which are stored
 column by column)
 
 
-```
+```cpp
 mat::const_iterator
 vec::const_iterator
 rowvec::const_iterator
@@ -165,14 +163,14 @@ random access iterators, for read-only access to elements (which are stored
 column by column)
 
 
-```
+```cpp
 mat::col_iterator
 vec::col_iterator
 rowvec::col_iterator
 ```
 random access iterators, for read/write access to the elements of a specific column
 
-```
+```cpp
 mat::const_col_iterator
 vec::const_col_iterator
 rowvec::const_col_iterator
@@ -180,25 +178,25 @@ rowvec::const_col_iterator
 random access iterators, for read-only access to the elements of a specific column
 
 
-```
+```cpp
 mat::row_iterator
 sp_mat::row_iterator
 ```
 rudimentary forward iterator, for read/write access to the elements of a specific row
 
-```
+```cpp
 mat::const_row_iterator
 sp_mat::const_row_iterator
 ```
 rudimentary forward iterator, for read-only access to the elements of a specific row
 
-```
+```cpp
 vec::row_iterator
 rowvec::row_iterator
 ```
 random access iterators, for read/write access to the elements of a specific row
 
-```
+```cpp
 vec::const_row_iterator
 rowvec::const_row_iterator
 ```
@@ -230,7 +228,7 @@ returns the total number of elements
 `.min( row_of_min_val, col_of_min_val )` member functions of Mat and SpMat
 `.max( row_of_max_val, col_of_max_val )`
 
-```
+```cpp
 .is_vec()
 .is_colvec()
 .is_rowvec()
@@ -252,7 +250,7 @@ returns the total number of elements
 
 saving/loading matrices and cubes
 
-```
+```cpp
 .save( name )
 .quiet_save( name )
 .save( name, file_type )
@@ -331,7 +329,7 @@ copied and converted to an 8 bit representation. As such the cube/field should
 have values in the [0,255] interval, otherwise the resulting image may not
 display correctly.
 
-```
+```cpp
 linspace( start, end )
 linspace( start, end, N )
 
@@ -343,7 +341,7 @@ randg
 
 To change the RNG seed, use `arma_rng::set_seed(value)` or `arma_rng::set_seed_random()` functions
 
-```
+```cpp
 toeplitz( A )
 toeplitz( A, B )
 circ_toeplitz( A )
@@ -368,7 +366,7 @@ Condition number of matrix A (the ratio of the largest singular value to the sma
 Calculate the cross product between A and B, under the assumption that A and B
 are 3 dimensional vectors
 
-```
+```cpp
 det( A )
 det( A, method )
 log_det( val, sign, A )
@@ -378,7 +376,7 @@ Determinant of square matrix A
 
 If A is not square, a `std::logic_error` exception is thrown 
 
-```
+```cpp
 diagmat( X ) 
 diagvec( A )
 diagvec( A, k )
@@ -397,7 +395,7 @@ is more robust
 Obtain the positive distance of the absolute value of each element of X to the
 next largest representable floating point number
 
-```
+```cpp
 imag( X )
 real( X )
 rank( X )
@@ -447,7 +445,7 @@ and double elements)
 `round(A)` round to nearest integer, away from zero
 `sign(A)`
 
-```
+```cpp
 matrix_type Y = trig_fn(X
 cube_type Y = trig_fn(X)
 ```
@@ -460,7 +458,7 @@ tan family: `tan, atan, tanh, atanh`
 
 ## Decompositions
 
-```
+```cpp
 R = chol( X )
 R = chol( X, layout )
 
@@ -474,7 +472,7 @@ Matrix X must be symmetric and positive-definite. The argument layout is
 optional; layout is either "upper" or "lower", which specifies whether R is
 upper or lower triangular.
 
-```
+```cpp
 vec eigval = eig_sym( X )
 
 eig_sym( eigval, X )
@@ -499,7 +497,7 @@ eig_pair( eigval, eigvec, A, B )
 Eigen decomposition for pair of general dense square matrices A and B of the
 same size, such that `A*eigvec = B*eigvec*diagmat(eigval)`
 
-```
+```cpp
 vec eigval = eigs_sym( X, k )
 vec eigval = eigs_sym( X, k, form )
 vec eigval = eigs_sym( X, k, form, tol )
@@ -525,7 +523,7 @@ The argument form is optional; form is one of:
 
 The argument tol is optional; it specifies the tolerance for convergence
 
-```
+```cpp
 cx_mat Y =  fft( X )
 cx_mat Y =  fft( X, n )
 
@@ -539,7 +537,7 @@ ifft(): inverse fast Fourier transform of a vector or matrix (complex only)
 
 If given a matrix, the transform is done on each column vector of the matrix
 
-```
+```cpp
 B = inv( A )
 B = inv( A, method )
 
@@ -552,14 +550,14 @@ inv_sympd( B, A )
 
 Inverse of symmetric positive definite matrix A.
 
-```
+```cpp
 lu( L, U, P, X )
 lu( L, U, X )
 ```
 
 Lower-upper decomposition (with partial pivoting) of matrix X 
 
-```
+```cpp
 B = null( A )
 B = null( A, tolerance )
 
@@ -569,7 +567,7 @@ null( B, A, tolerance )
 
 Find the orthonormal basis of the null space of matrix A 
 
-```
+```cpp
 B = pinv( A )
 B = pinv( A, tolerance )
 B = pinv( A, tolerance, method )
@@ -581,8 +579,8 @@ pinv( B, A, tolerance, method )
 
 Moore-Penrose pseudo-inverse of matrix A
 
-```
-qr( Q, R, X ) 
+```cpp
+qr( Q, R, X )
 
 qz( AA, BB, Q, Z, A, B )
 ```
@@ -594,7 +592,7 @@ The left and right Schur vectors are stored in Q and Z, respectively
 
 In the complex-valued problem, the generalised eigenvalues are found in diagvec(AA) / diagvec(BB)
 
-```
+```cpp
 S = schur( X )
 
 schur( S, X )
@@ -608,7 +606,7 @@ U is a unitary matrix containing the Schur vectors
 
 S is an upper triangular matrix, called the Schur form of X
 
-```
+```cpp
 X = solve( A, B )
 X = solve( A, B, method )
 
@@ -631,7 +629,7 @@ The number of rows in A and B must be the same
 If A is known to be a triangular matrix, the solution can be computed faster
 by explicitly marking A as triangular through trimatu() or trimatl() 
 
-```
+```cpp
 vec s = svd( X )
 
 svd( vec s, X )
@@ -647,7 +645,7 @@ Singular value decomposition of dense matrix X
 
 The singular values are in descending order 
 
-```
+```cpp
 X = syl( A, B, C )
 syl( X, A, B, C )
 ```
@@ -719,7 +717,7 @@ Simple wall clock timer class for measuring the number of elapsed seconds
 
 Examples:
 
-```
+```cpp
 wall_clock timer;
 
 mat A = randu<mat>(100,100);
@@ -750,7 +748,7 @@ sword is a typedef for a signed integer type
 If you save the program below as example.cpp, under Linux you can compile it using:
 g++ example.cpp -o example -O2 -larmadillo
 
-```
+```cpp
 #include <iostream>
 #include <armadillo>
 
@@ -770,7 +768,7 @@ return 0;
 
 # RcppArmadillo
 
-```
+```cpp
 arma::mat
 arma::vec
 ```
@@ -789,7 +787,7 @@ x.print();
 x.print("text");
 ```
 
-```
+```cpp
 R::dnorm()
 R::pnorm()
 ```

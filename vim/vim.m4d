@@ -1,22 +1,25 @@
 ---
 {
-"title" : "Vim"
+"title" :  "Vim"
 }
 ---
 
 ²0¹
 # Introduction
 
-"`.vimrc`" (vim), "`init.vim`" (neovim)
-
 `:qall!` ²q¹ `:wall`  
 `:ter` *command*  
+`:ball `*N*
 
 . u C-r
 
 # normal mode
 
-*operator*:  
+x r  
+c-a c-x  
+
+#### Operators
+
 c ²q¹ change,  
 d ²q¹ delete,  
 y ²q¹ yank,  
@@ -25,7 +28,15 @@ m ²q¹ mark (signature),
 g ²q¹ go,  
 p ²q¹ paste  
 
-x r
+#### g
+
+G gg gi gE g\_  
+g< g> gs (vim-swap)  
+gn ²q¹ (motion)  
+gf ²q¹ go to file under cursor  
+gq ²q¹ format text  
+
+#### Motions
 
 Motions move the cursor.  
 [ *N* ] *motion*
@@ -37,17 +48,11 @@ C-[jk] ²q¹ line down/up to next char
 
 C-o C-i
 `` ` ``
-G gg gi gE g\_  
-g< g> gs (vim-swap)  
 \% `#`  
 w W e E b B ( ) \{ \}  
 0 \$ £ `^`  
 f F ; , (shot-f)  
-gq g=  
-ö ²q¹ search  
-gn ²q¹ (motion)  
-gf ²q¹ go to file under cursor  
-c-a c-x  
+ö ? ²q¹ search  
 < > ²q¹ indentation
 
 #### [ and ]
@@ -82,13 +87,7 @@ c-w p
 c-w m (zoom)  
 c-w w  
 c-w o  
-
-#### marks
-m. ²q¹ new mark  
-m<space> ²q¹ delete all  
-m/ ²q¹ show all marks  
-
-'*mark*
+c-w c  
 
 # Insert mode
 
@@ -164,11 +163,18 @@ vim-bufkiller,
 traces.vim,
 chrisbra/unicode.vim,
 
+#### tabular
+
+`:Tab \=`  
+`:Tab \:/zs`
+
 #### vim-signature
 
+m. ²q¹ new mark  
 m*char* m[0-9] ²q¹ toggle mark/markers  
 m<space> m<BS> ²q¹ delete all marks/markers from the current buffer  
 m/ m? ²q¹ location list  
+'*mark*  
 `:SignatureToggle`
 `:SignatureRefresh`
 
@@ -222,15 +228,6 @@ div.container>p`#`foo>a
 div>p ²s¹ 5
 
 div>p`#`foo\$ ²s¹ 5
-
-#### coq-au-vim
-
-:CoqStart :CoqQuit  
-:CoqNext  
-:CoqRewind  
-:CoqTCursor  
-:CoqQuery {text}  
-:CoqSet {options}  
 
 #### coc
 

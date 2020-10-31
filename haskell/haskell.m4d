@@ -1,24 +1,25 @@
 ---
 {
-"title": "notes"
+  "title": "notes",
+  "latex": "true"
 }
 ---
 
 ²0¹
+
+```hs
+"looooooo\
+ooooong string"
+```
+
 Function arrows associate to the right, that is, W→X→Y→Z is
 equivalent to W→(X→(Y→Z)).
 
-`ghc-pkg find-module --simple-output` *module-name*
+function composition  
+`(.) f g x = f (g x)`
 
-hoogle
-
-\$HOME/.ghc  
-.ghci.conf
-
-function composition
-`(.) f g x = f (g x)`  
-function application (a function)
-`($) (f x) = (f $ x)`
+function application (a function)  
+`(\$) (f x) = (f $ x)`
 
 zip
 
@@ -33,48 +34,50 @@ lookup
 ` (s0 `$⊕$` x) `$⊕$` y,`  
 `((s0 `$⊕$` x) `$⊕$` y ) `$⊕$` z ]`  
 
-```
+``` hs
 pow2s = scanl (+) 1 pow2s
 take 4 pow2s
 ```
--m4 esyscmd(¹stack ./examples/some.hs ²)
+m4 esyscmd(¹stack ./data/some.hs ²)
 
-fibs = scanl (+) 1 (0 : fibs)
+`fibs = scanl (+) 1 (0 : fibs)`
 
 `o2s = a : scanl ( `$⊕$` ) b o2s`
 
-```
+``` hs
 pells = 0 : scanl (\y z -> 2*y+z) 1 pells
+```
 
+``` hs
 rotate :: Int -> [a] -> [a]
 rotate = drop <> take
 ```
 
-\minisec{list}
+#### list
 
-:  
-[]\q empty list  
-`map`\q fmap for lists  
-`head`\q tail  
-`last`\q init  
+`:`  
+`[]` ²q¹ empty list  
+`map` ²q¹ "fmap" for lists  
+`head` ²q¹ `tail`  
+`last` ²q¹ `init`  
 `length`  
 `null`  
 `reverse`  
 `drop` *int*  
 `elem` *element*  
-`take` *int* (cycle *list*)  
+`take` *int* `(cycle` *list*`)`  
 `replicate` *int* *list*  
-`!!`\q index  
+`!!` ²q¹ index  
 
-\minisec{tuples}
+#### tuples
 
-`(1, 2)`
+`(1, "two")`
 
 `fst`\quad `snd`
 
-```
-(,,) <$> "1" <*> "2" <*> "3"
-```
+`(,,) <$> "1" <*> "2" <*> "3"`
+
+---
 
 \minisec{typeclasses}
 
@@ -381,3 +384,317 @@ long the associativity is correct: (1+2+).
 # Either
 
 `either fR fL someEither`
+
+# heap
+
+Prelude Data.Heap> Data.Heap.fromList [1,2,5,7] :: MinHeap Int
+fromList [(1,()),(2,()),(5,()),(7,())]
+
+Other constructors e.g. singleton, fromAscList, etc. operate similarly.
+
+Once you've constructed the heap, the rest are easy, e.g. to insert an item to a heap
+
+Prelude Data.Heap> let heap = Data.Heap.fromList [1,2,5,7] :: MinHeap Int
+Prelude Data.Heap> heap
+fromList [(1,()),(2,()),(5,()),(7,())]
+Prelude Data.Heap> Data.Heap.insert 3 heap
+fromList [(1,()),(3,()),(2,()),(5,()),(7,())]
+
+To read the top of the heap
+
+Prelude Data.Heap> heap
+fromList [(1,()),(2,()),(5,()),(7,())]
+Prelude Data.Heap> viewHead heap
+Just 1
+
+# mental model
+
+**expression reduction** mode:  
+A program is a collection of expreasions.
+A entire program is regarded as a single expression.
+The subexpression is evaluated (reduced) in some order.
+The evaluation is performed by replacement.
+
+## lazy evaluation
+
+(pure is order free)
+
+evaluate only when needed +
+evalueate only enough +
+evaluate at most once
+
+An expression is evaluated by normal order (leftmost outermost redex first)
+
+To postpone the evaluation, an unevaluated expression is built
+in the heap memory.
+
+Pattern-matching or forcing request drive the evaluation.
+
+## Expression and value
+
+An expression denotes a value
+An expression is evaluated to a value
+
+There are many evaluation approaches
+
+There are some evaluation levels
+
+NF (Normal Form): no redexes at all
+
+WHNF (Weak Head Normal Form): no top-level redexes, 
+top-level (head) is a constructor or a lambda abstraction
+
+Expression categories:
+
+lambda abstraction
+let expression
+conditional
+case expr
+do expr
+function application
+general constructor, literal and some forms (7, [1,2,3], (1,2), 'a', x:xs, Just 5)
+variable
+
+Specification is described in Haskell 2010 Language Report
+
+Classification by values:
+
+Expressions: unevaluated | values
+
+values: data values | function values | bottom
+
+values: ( WHNF ( HNF ( NF ) ) )
+
+( "\x -> abs 1" ( "\x -> x + (abs 1)", "Jst (f x)" "[f x, g y]" ( "7", "[1,2,3]", "\x -> x" )
+
+## Internal representation of expressions
+
+Constructor:
+
+A constructor builds a structured data value
+A constructor distiguishes the data value in expressions
+Constructors are defined by data declaration
+
+Thunk:
+
+A thunk is an unevaluated expr in heap memory.
+A thunk is built to postpone the evaluation.
+
+let, case expression:
+
+A let expr may build a thunk. A case expression evaluates (forces) and
+deconstructs the thunk.
+
+```hs
+let x = Just 5
+let x = \y -> y + z
+let x = take y ys
+```
+
+a case expr evaluates a subexpr, and performs case analysis
+
+(1) Pattern-matching drives the evaluation.
+(2) select alternative expression with result value
+
+```hs
+case x of
+  Just _ -> True
+  Nothing -> False
+```
+
+pattern-matching in function definition
+
+```hs
+f Just _ = True
+f Nothing = False
+```
+desugar:
+```hs
+f x case x of
+  Just _ -> True
+  Nothing -> False
+```
+
+## Evaluation
+
+The evaluation produces a value from an expression
+
+Order:
+
+**apply first**:
+lazy evaluation, call-by-name, call-by-need, outermost reduction, normal order reduction
+
+**argument first**:
+eager evaluation,
+call-by-value,
+innermost reduction,
+application order reduction
+
+(1) example
+```
+tail (map abs [1, -2, 3])
+```
+(2) how to postpone the evaluation of args?
+(3) GHC internally translates the expr
+(4) A let expr builds a thunk
+```
+let thunk0 = map abs [1, -2, 3]
+in tail thunk0
+```
+(5) function apply to arg
+(6) tail function is defined here
+```
+tail (_:xs)=xs
+```
+(7) functions's pattern is syntactic sugar
+```
+tail y = case y of
+  (_:xs) -> xs
+```
+(8) substitute the function body (beta reduction)
+```
+case thunk0 of
+  (_:xs) -> xs
+```
+(9) case pattern-matching drives the evaluation
+(10) but, stop at WHNF
+```
+case (abs 1):(map abs [-2, 3]) of
+  (_:xs) -> xs
+```
+(11) bind variables to a result
+(12) return the value
+```
+map abs [-2, 3]
+```
+
+(1) Evaluation by pattern-matching
+
+There are two kinds of pattern-matching.
+
+Strict patterns drive the evalution
+
+```hs
+case ds of
+  x:xs -> f x xy
+  [] -> False
+```
+```hs
+f Just _ = True
+f Nothing = False
+```
+
+Lazy patterns postpone the evaluation.
+
+```hs
+let (x:xs) = fun args
+```
+irrefutable patterns
+```hs
+f ~(Just _) = True
+f ~(Nothing) = False
+```
+
+(2) Evaluation by primitive operation
+
+primitive (built-in) operation
+```hs
+f x y = x + y
+```
+
+(3) Evaluation by strict version function
+(4) Evaluation by forcing function
+`seq x y`
+(5) Eval by special syntax
+
+Bang pattern:
+arguments are evaluated before function application
+```hs
+{-# LANGUAGE BangPatterns #-}
+
+f !xs = g xs
+```
+
+Strictness flag:
+args are evaluated before constructor application
+```hs
+data Pair = Pair !a !b
+```
+
+(6) Eval by special pragma
+(7) Eval by compile option
+`ghc -O` Turn on optimization, imply `-fstrictness`
+
+---
+
+STG-machine:
+efficientyl performs lazy graph reduction.
+Associates directly lampda calculus and physical machine.
+
+STG-dump shows whish expr is built as thunks.
+
+`$ ghc -O -ddump-stg file.hs`
+
+# Semantics
+
+## Bottom
+
+A well formed expr should have a value.
+
+A non-terminating expression:
+infinite loop or partial function
+
+evaluates to bottom (a value)
+
+bottom is "an undefined value" or "a non-terminating value"
+
+```hs
+undefined :: a
+```
+
+##
+
+"Non-strict" means that the expr may or may not be evaluated.
+"Strict" means that the expr is definitely evaluated.
+
+GHC implements non-strict semantics by lazy evaluation.
+There are multiple levels of strict.
+A function places "strictness demands" on each of its args.
+
+Strictness of a func can be defined with the association between
+input and output.
+"Given a non-terminating arg, the function will terminate?"
+
+Strict function's output is bottom when input is bottom.
+Given a non-terminating argumtents, strict function will not terminate.
+
+Non-strict function's output is not bottom when input is bottom.
+given a non-terminating arguments, non-strict function will terminate.
+
+## Lifted and boxed types
+
+Lifted types include bottom (Bool, Int, Char, Maybe, List, …).
+Unlifted types do not include bottom (Int#, Char#, Addr#, Array#, ByteArray#, …).
+
+Boxed types are represented as a pointer.
+Unboxed types are represented other than a pointer (can't be lifted, can't be postboned, no polymorphism)
+
+Identifier's `#` customarily means "primitive" rahter than "unboxed" or "unlifted".
+Kind's `#` means "unlifted".
+
+##
+
+Strictness analysis analyzes whether a function is sure to evaluate its args.
+
+`$ ghc -O -ddump-strsigs file.hs`  
+`S` "head-Strict", `L` "lazy"
+`$ ghc -O -ddump-stranal file.hs`  
+
+Strictness analysis are used to avoid the thunk.
+If GHC knows that a function is strict, arguments is evaluated before application.
+
+## Sequential Order
+
+`seq` function only guarantee that it is strict in both arguments.
+This semantic property makes no operational guarantee about order of evaluation.
+`pseq` makes operational quarantee about order of evaluation.

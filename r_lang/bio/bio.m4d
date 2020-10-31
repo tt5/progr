@@ -12,7 +12,7 @@ Bioconductor
 Protein Data Bank files (or PDB files) are the most common format
 for the distribution and storage of high-resolution biomolecular coordinate data.
 
-```
+```r
 library(bio3d)
 lbio3d()
 ```
@@ -24,8 +24,8 @@ and libraries) installed on your system and in the search path for executables.
 
 # other
 
-```
-conda install -c schrodinger pymol
+```bash
+$ conda install -c schrodinger pymol
 ```
 
 `gh/molstar/molstar`

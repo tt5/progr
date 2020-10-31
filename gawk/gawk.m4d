@@ -9,11 +9,8 @@ An awk **program** (or script) consists of
 a series of *rules* and *function definitions* interspersed.
 A **rule** contains a *pattern* and an *action*, either of which (but not both)
 may be omitted.
-```
-m4 esyscmd(¹cat ./filesawk/test.awk²) ¹=>²
-m4 esyscmd(¹gawk -f ./filesawk/test.awk filesawk/data²)
-```
 
+---
 String indices start at one.
 
 You cannot have a variable and an array with the same name.
