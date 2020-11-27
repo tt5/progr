@@ -1,78 +1,138 @@
 ---
 {
-"title" :  "Vim"
+"title" :  "notes"
 }
 ---
 
 ²0¹
+
+# .vimrc, init.vim
+
+key mappings
+```vim
+let mapleader = '\'
+map <space> \
+let maplocalleader = ','
+inoremap <CR> <ESC>
+```
+
 # Introduction
 
 `:qall!` ²q¹ `:wall`  
-`:ter` *command*  
-`:ball `*N*
 
-. u C-r
+u C-r ²q¹ undo/redo
+
+Special case: When the cursor is in a word, "cw" and "cW" do not
+include the white space after a word, they only change up to the end
+of the word.
+
+# buffers
+
+`:ball` *N*
+`:ls` `:`*N*`b` `]b` `[b`
+
+# commandline
+
+C-r,C-w
+
+```md
+                                :ce
+                                                                 :ri
+  :le 2
+```
+
+pipe operator “|”
+
+## substitute
+
+`:[range]s/{pattern}/{string}/[flags]`  
+
+When [range] and [count] are omitted, replace in the current line
+only.
+
+`:s/pattern/repl/flags`, [serch], `g&`
+
+flags:  
+c ²q¹ confirm 'y', 'l', 'n', 'a', 'q'
+i I
+
+`:s/pattern/\=<expr>/`
+`:s/pattern/\=submatch(0)."a"/`
+
+`:s/mydir/\=expand($PWD)/g`
 
 # normal mode
 
-x r  
-c-a c-x  
+x r ²q¹ delete/change char  
+\<visual\>r ²q¹ <BS>
 
-#### Operators
+## Operators
 
-c ²q¹ change,  
 d ²q¹ delete,  
 y ²q¹ yank,  
+p ²q¹ paste or put  
 s ²q¹ send (nvim-send-to-term),  
 m ²q¹ mark (signature),  
-g ²q¹ go,  
-p ²q¹ paste  
+! ²q¹ filter with command
 
-#### g
+### c "change"
+
+change (delete and start insert)
+
+cc ²q¹ preserves indent
+
+### g "go"
 
 G gg gi gE g\_  
-g< g> gs (vim-swap)  
+g gs ²q¹ (vim-swap)  
 gn ²q¹ (motion)  
 gf ²q¹ go to file under cursor  
 gq ²q¹ format text  
+gw ²q¹ format text with internal function
+g= ²q¹ process with m4
+gP ²q¹ paste above cursor
 
-#### Motions
+gp ²q¹ select last pasted text  
+g~ ²q¹ switch case
+
+## Motions
 
 Motions move the cursor.  
 [ *N* ] *motion*
 
-h ²q¹ word left  
-jk ²q¹ line down/up  
-C-h l ²q¹ char right/left  
-C-[jk] ²q¹ line down/up to next char  
+```vim
+nmap <c-l> W
+nnoremap h gE
+```
 
-C-o C-i
-`` ` ``
-\% `#`  
-w W e E b B ( ) \{ \}  
+C-o C-i `` ` ``  
+\%  ²s¹ `#` ²s¹  
+w W e E b B  
+( ) \{ \}  
 0 \$ £ `^`  
 f F ; , (shot-f)  
-ö ? ²q¹ search  
-< > ²q¹ indentation
+`<` `>` ²q¹ indentation
 
-#### [ and ]
+### [ and ]
 
-] [  
+unimpaired plugin
+
+] [ ²q¹ go to line that starts with `{`   
 ( ) { }  
-<space>  
 b ²q¹ buffer  
 e ²q¹ exchange lines  
 h ²q¹ changes  
 q ²q¹ errors  
-p ²q¹ paste above/below line  
+p ²q¹ paste with indent  
 d ²q¹ definition  
 `` ` `` - = ²q¹ mark and marker  
-x
-n
-u
-y
+x ²q¹ XML encode/decode
+u ²q¹ URL encode/decode
+y ²q¹ c string encode/decode
+<space> ²q¹ add blank lines
 
-#### registers
+## registers
+
 ". ²q¹ last inserted  
 "\% ²q¹ "`#` ²q¹ filename of buffer  
 ": ²q¹ last command  
@@ -80,14 +140,18 @@ y
 "= ²q¹ expression (calculator)  
 "q ²q¹ macro register
 
-@"
+`:let @/ = "search-pattern"`
 
-#### windows
+q<char> ²q¹ start recording, stop with 'q'  
+@<char> ²q¹ execute  
+@@ ²q¹ repeat
+
+## windows
+
+c-w,w c-w,r c-w,c  
 c-w p  
-c-w m (zoom)  
-c-w w  
+c-w m ²q¹(zoom)  
 c-w o  
-c-w c  
 
 # Insert mode
 
@@ -100,10 +164,11 @@ Entering Insert Mode:
 i I a A gi
 o O
 
-#### autocomplete
+## autocomplete
 
 C-x,C-f ²q¹ Filenames
 
+²q¹
 # Text Objects
 
 [ *N* ] *operator* [ *N* ] ( *motion or text-obj* )
@@ -113,28 +178,22 @@ C-x,C-f ²q¹ Filenames
 
 **object**:  
 t ²q¹ xml tag block  
-' " <backtick> <  
-s w W p b B [ ]  
-n N j J c h (hank (changes))  
-q S . ; + - = \~ \_ ²s¹ `#` / | \ \& \$  
-il aL  ²q¹ line  
-ii ai ²q¹ indented block  
-ie ²q¹ entire file
-j (vim-jdaddy)
+b ²q¹ any bracket  
 
-# commandline
+```vim
+onoremap <silent> iL :<c-u>normal! g_v^<cr>
+onoremap <silent> aL :<c-u>normal! $v0<cr>
+```
 
-`:ls`  
-`:`*number*`b`  
-`:s`  
-
-C-r,C-w
-
+²q¹
 # tags
 
-c-]
-
 `ctags`
+
+c-]
+c-T
+
+]I [I
 
 `hasktags .` ²q¹
 `jsctags`
@@ -156,38 +215,63 @@ C-w,\}
 
 # Plugins
 
-habama/vim-sendtoterm (win),
-sjl/tslime (tmux),
-nvim-send-to-term (nvim),
+habama/vim-sendtoterm (win), sjl/tslime (tmux)  
 vim-bufkiller,
-traces.vim,
 chrisbra/unicode.vim,
 
-#### tabular
+## targets
+
+X := one of:  
+( ) { } B [ ] t
+
+Pair text objects work over multiple lines and support seeking.
+
+In Pair [N]iX
+A Pair [N]iX
+
+Inside Pair [N]IX
+exclude whitespace at both ends
+
+Around Pair [N]AX
+include whitespace at one side of the pair. Prefers to select trailing whitespace, falls back to select leading whitespace.
+
+Next and Last Pair
+in( an( In( An( il( al( Il( Al( ...
+
+Work directly on distant pairs without moving there separately.
+
+All the above pair text objects can be shifted to the next pair by
+including the letter n. The command in) selects inside of the next
+pair. Use the letter l instead to work on the previous (last) pair.
+Uses a count to skip multiple pairs. Skipping works over multiple
+lines.
+
+## tabular
 
 `:Tab \=`  
 `:Tab \:/zs`
 
-#### vim-signature
+## vim-signature
 
 m. ²q¹ new mark  
 m*char* m[0-9] ²q¹ toggle mark/markers  
-m<space> m<BS> ²q¹ delete all marks/markers from the current buffer  
+m m ²q¹ delete all marks/markers from the current buffer  
 m/ m? ²q¹ location list  
 '*mark*  
 `:SignatureToggle`
 `:SignatureRefresh`
 
-#### changesPlugin
+## changesPlugin
 
 chrisbra/changesPlugin
 
 `:CL` `:CD` `:CT`
 
-#### cawk
-gc[woiI]
+## caw
 
-#### vim-sandwich
+gcc gco gcO
+
+## vim-sandwich
 
 (sendwichrecipes)
 
@@ -199,25 +283,26 @@ sd *deletion* ²q¹ sdb ²q¹ (foo) -> foo
 
 sr *deletion* *addition* ²q¹ srb" ²q¹ (foo) -> "foo"
 
-saiwf … → *fun-name*(…)
+function ²q¹ saiwf  
+interactive ²q¹ saiwi  
 
-saiwi … <CR> … <CR>
-
-sdifoo<CR>bar<CR> ²q¹ foowordbar -> word
+sdifoobar ²q¹ foowordbar -> word
 
 is as ²q¹ search for char
 
 **tags:** saiwt
 
-div`#`id1 -> <div id="id1"></div>
+div`#`id1 -> `<div id="id1">…</div>`
 
-div.class1 -> <div class="class1"></div>
+div.class1 -> `<div class="class1">…</div>`
 
-div[attr=value -> <div attr="value"></div>
+div[attr=val -> `<div attr="val">…</div>`
 
-#### emmet
+## emmet
 
 mattn/emmet-vim
+
+`,,` in insert mode
 
 html:5
 
@@ -229,9 +314,12 @@ div>p ²s¹ 5
 
 div>p`#`foo\$ ²s¹ 5
 
-#### coc
+## coc
 
 `.config/coc/ultisnips/vim.snippets`
+
+`CocInstall marketplace`
+coc-terminal
 
 # regex
 
@@ -256,3 +344,27 @@ user runtime folder:
 runtime data/sandwichrecipes.vim
 
 packadd vim-sandwich
+
+# debug
+
+```vim
+:packadd termdebug
+:Termdebug name
+```
+
+gdb window:
+run
+info break
+
+# multi cursor
+
+mg979/vim-visual-multi
+
+c-n ²q¹ visual-multi mode
+c-down, c-up
+shift-arrows
+n N
+[ ]
+q Q
+i a I A
+<tab> cursor / extend (visual)

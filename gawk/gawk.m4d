@@ -10,16 +10,15 @@ a series of *rules* and *function definitions* interspersed.
 A **rule** contains a *pattern* and an *action*, either of which (but not both)
 may be omitted.
 
----
 String indices start at one.
-
 You cannot have a variable and an array with the same name.
 
-`$ awk -b -f` *file* `\`  
+`$ awk -b -f` *awk-file* `\`  
 `-v var1="$`*shellvar*`"` `\`  
 `'`*program*`'` `\`  
 *datafile* `var2=`*val* *datafile*
 
+---
 `$1=$1`\quad force record to be reconstituted
 
 `BEGINFILE`  

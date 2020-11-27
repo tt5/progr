@@ -48,7 +48,7 @@ $ @	component / slot extraction
 =	assignment (right to left)
 ?	help (unary and binary)
 
-(Note that = is not necessarily an operator.) 
+(Note that = is not necessarily an operator.)
 
 The binary operators ::, :::, $ and @ require names or string constants on the right hand side, and the first two also require them on the left. 
 
@@ -145,8 +145,9 @@ ggmap (ggplot2)
 packrat  
 BiocManager `BiocManager::install("EBImage")`  
 rsvg (svg to pdf)  
-r-lib/svglite daqana/tikzDevice  
-RcppArmadillo
+r-lib/svglite  
+daqana/tikzDevice  
+RcppArmadillo  
 RcppCore/RcppParallel  
 Rdatatable/data.table  
 kanepluplus/bigmemory  

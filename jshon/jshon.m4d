@@ -12,10 +12,10 @@ https://github.com/keenerd/jshon
 
 *[* object *or* array *]*$^+$
 
----
 object:  
-\textbf{\{} \textit{[} string : value \textit{[} , string : value \textit{]}$^{\star}$ \textit{]}$^?$ \textbf{\}}
+**\{** *[* string : value *[* , string : value *]*$^{ ²s¹ }$ *]*$^?$ **\}**
 
+---
 array:  
 \textbf{[} \textit{[} value \textit{[} , value \textit{]} \star \textit{]}? \textbf{]}
 

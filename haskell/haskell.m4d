@@ -6,6 +6,9 @@
 ---
 
 ²0¹
+# Functions
+
+lambda abstraction
 
 ```hs
 "looooooo\
@@ -40,11 +43,11 @@ take 4 pow2s
 ```
 m4 esyscmd(¹stack ./data/some.hs ²)
 
-`fibs = scanl (+) 1 (0 : fibs)`
 
 `o2s = a : scanl ( `$⊕$` ) b o2s`
 
 ``` hs
+fibs = scanl (+) 1 (0 : fibs)
 pells = 0 : scanl (\y z -> 2*y+z) 1 pells
 ```
 
@@ -53,7 +56,32 @@ rotate :: Int -> [a] -> [a]
 rotate = drop <> take
 ```
 
-#### list
+²q¹
+# Types and Typeclasses
+
+IO, (->), [], Maybe, (), IOError  
+Int, Integer, Float, Double
+
+## typeclasses
+
+`Eq` ²q¹ eqality testing  
+`Show` ²q¹ string representation  
+`Read`  
+`Ord` ²q¹ ordering  
+`Num`  
+`Bonded`  
+`Enum`  
+`Real`
+`Fractional`
+`Integral`  
+`RealFract`
+`Floating`  
+
+Functor  
+Monad  
+MonadPlus
+
+## list
 
 `:`  
 `[]` ²q¹ empty list  
@@ -69,7 +97,7 @@ rotate = drop <> take
 `replicate` *int* *list*  
 `!!` ²q¹ index  
 
-#### tuples
+## tuples
 
 `(1, "two")`
 
@@ -78,19 +106,6 @@ rotate = drop <> take
 `(,,) <$> "1" <*> "2" <*> "3"`
 
 ---
-
-\minisec{typeclasses}
-
-`Eq`\q eqality testing  
-`Ord`\q ordering  
-`Show`\q string representation  
-`Read`  
-`Enum`  
-`Bonded`  
-`Num`  
-`Integral`  
-`Floating`  
-
 # Category
 
 In Haskell, we define a category by specifying the hom-set as a type. Then we

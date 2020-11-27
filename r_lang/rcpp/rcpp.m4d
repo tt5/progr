@@ -5,6 +5,9 @@
 ---
 
 ²0¹
+
+https://github.com/cplusplus/draft
+
 Many function names in R may contain periods. For example, the function name
 `write.table()` delimits words with a period. However, in C++ the period
 indicates a method. This means that C++ object names can’t include a period.
@@ -20,6 +23,7 @@ zero.
 using namespace Rcpp;
 
 // [[Rcpp::plugins(cpp17)]]
+
 // [[Rcpp::export]]
 void useAny() {
     std::experimental::any x(5);
@@ -28,6 +32,7 @@ void useAny() {
 }
 ```
 
+---
 ``` r
 NA_REAL
 R_NegInf
