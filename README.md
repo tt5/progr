@@ -1,13 +1,18 @@
-```
 .
+├── bash
+├── C
 ├── coq
 ├── gawk
-│   └── code
+├── git
 ├── haskell
-├── isoc
+├── js
 ├── jshon
-├── r_lang
+├── linux
+├── python
+├── R
 │   ├── bio
 │   └── rcpp
-└── vim
-```
+├── vim
+└── zig
+
+15 directories

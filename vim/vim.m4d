@@ -168,7 +168,6 @@ o O
 
 C-x,C-f ²q¹ Filenames
 
-²q¹
 # Text Objects
 
 [ *N* ] *operator* [ *N* ] ( *motion or text-obj* )
@@ -185,7 +184,11 @@ onoremap <silent> iL :<c-u>normal! g_v^<cr>
 onoremap <silent> aL :<c-u>normal! $v0<cr>
 ```
 
-²q¹
+vim-textobj-user
+
+L ²q¹ line  
+S ²q¹ space  
+
 # tags
 
 `ctags`
@@ -233,7 +236,8 @@ Inside Pair [N]IX
 exclude whitespace at both ends
 
 Around Pair [N]AX
-include whitespace at one side of the pair. Prefers to select trailing whitespace, falls back to select leading whitespace.
+include whitespace at one side of the pair. Prefers to select trailing
+whitespace, falls back to select leading whitespace.
 
 Next and Last Pair
 in( an( In( An( il( al( Il( Al( ...
